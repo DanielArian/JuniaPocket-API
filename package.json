@@ -1,0 +1,29 @@
+{
+  "name": "aurionscrapperapi",
+  "version": "1.0.0",
+  "description": "Fetch data from aurion.junia.com",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "\u0016https://github.com/DanielArian/aurion-scrapper-api"
+  },
+  "author": "Daniel ARIAN, ISEN Lille",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "cheerio": "^1.0.0-rc.9",
+    "exports": "0.0.1",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.9",
+    "mongoose": "^5.12.12",
+    "puppeteer": "^9.1.1"
+  },
+  "engines": {
+    "node": "14.16"
+  }
+}
