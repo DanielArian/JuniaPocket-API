@@ -31,6 +31,7 @@ exports.saveMarkDocument = function (doc) {
       });
 }
 
+
 exports.getStudentMarkDoc = async function (studentAurionID) {
     /**
      * @param {String} studentAurionID
@@ -51,8 +52,8 @@ exports.getStudentMarkDoc = async function (studentAurionID) {
             console.log(`Document de notes de l'étudiant ${studentAurionID} récupéré dans la collection "marks".`)
             resolve(doc);
         } catch (error) {
-            console.log(error)
-            reject('ERROR')
+            console.log(error);
+            reject('ERROR');
         }
     });
 }
