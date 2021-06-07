@@ -21,7 +21,7 @@ app.use(middlewares.logRequest);
 app.use('/', routes.homepage);
 app.use('/user', routes.user);
 
-// L'accès au chemin ci-dessous nécessite une authentification
+// L'accès aux chemins ci-dessous nécessite une authentification
 app.use(middlewares.auth);
 app.use('/marks', routes.marks);
 app.use('/planning', routes.planning);
