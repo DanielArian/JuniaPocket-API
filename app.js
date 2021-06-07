@@ -26,7 +26,7 @@ app.use(middlewares.auth);
 app.use('/marks', routes.marks);
 app.use('/planning', routes.planning);
 
-port = config.port || 80 ;
+port = process.env.PORT || 5000 ;
 app.listen(port , function() {
     console.log(`Listening on Port ${port}`);
 });
