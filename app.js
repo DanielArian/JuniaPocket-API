@@ -7,6 +7,7 @@ const middlewares = require('./Middlewares/index');
 
 // Connection à Mongo DataBase
 const dbConnection = require('./databaseConnection');
+// console.log(`mongodb+srv://${config.dbUsername}:${config.dbPassword}@juniapocket.1vwtr.mongodb.net/data?retryWrites=true&w=majority`)
 const URI = `mongodb+srv://${config.dbUsername}:${config.dbPassword}@juniapocket.1vwtr.mongodb.net/data?retryWrites=true&w=majority`
 dbConnection.connectToMongoDB(URI);
 
