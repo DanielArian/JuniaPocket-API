@@ -40,6 +40,9 @@ async function connection(page, username, password) {
 
 
 async function checkAurionIDAndGetNameIfOk(username, password) {
+
+    console.log(`Connexion à Aurion de l'utilisateur ${username} ...`);
+
     const browser = await puppeteer.launch({
         'args': [
             '--no-sandbox',

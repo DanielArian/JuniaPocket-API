@@ -18,18 +18,22 @@ function createPlanningDocument(aurionID, planningResponse) {
 }
 
 
-// function updatePlanningDocument(studentAurionID, updatedMarkResponse) {
+function updatePlanningDocument(studentAurionID, updatedMarkResponse) {
 
-//     MarkModel.updateOne({aurionID: studentAurionID }, 
-//         {$set: {
-//             'weeks': updatedMarkResponse
-//         }},
-//         function (err, docs) {
-//             if (err){
-//                 console.log(err)
-//             }
-//             else {
-//                 console.log("Original Doc : ", docs);
-//             }
-//         });
-// }
+    try { 
+        MarkModel.updateOne({aurionID: studentAurionID }, 
+        {$set: {
+            'weeks': updatedMarkResponse
+        }},
+        function (err, docs) {
+            if (err){
+                console.log(err)
+            }
+            else {
+                console.log("Original Doc : ", docs);
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}

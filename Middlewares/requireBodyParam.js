@@ -2,7 +2,7 @@
  * description
  */
 
-module.exports.requireBodyParam = (req, res, next) => {
+exports.requireBodyParam = (req, res, next) => {
     if (req.body.hasOwnProperty('username') & req.body.hasOwnProperty('password')) {
         next();
     }

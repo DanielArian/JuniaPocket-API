@@ -18,3 +18,7 @@ exports.logRequest = (req, res, next) => {
 exports.requireBodyParam = (req, res, next) => {
     return midlw('requireBodyParam', req, res, next);
 }
+
+exports.auth = (req, res, next) => {
+    return midlw('auth', req, res, next);
+}

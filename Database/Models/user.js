@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const UserSchema = mongoose.Schema({
+    name: String,
     aurionID: String,
-    password: String,
-    name: String
+    aurionPassword: String,
+    jpocketPassword: String
 });
 
 module.exports = mongoose.model('User', UserSchema);

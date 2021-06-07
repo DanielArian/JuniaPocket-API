@@ -73,11 +73,11 @@ function formatEventsOfADay(dateOfTheDay, events) {
     for (var i = 0; i < events.length; i++) {
 
         // Vérifie si c'est un examen
-        var isAnExam = 'non';
+        var isAnExam = false;
         var examNode = events[i].find('i');
         if (examNode.length > 0) {
             if (examNode[0].attribs['title'] == 'Est une épreuve') {
-                isAnExam = 'oui';
+                isAnExam = true;
             }
         }
 

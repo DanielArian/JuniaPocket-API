@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
-exports.connectToMongoDB = (dbURL) => {
-    mongoose.connect(dbURL, {
+exports.connectToMongoDB = (uri) => {
+    mongoose.connect(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     });
