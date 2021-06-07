@@ -1,15 +1,15 @@
 {
-  "name": "aurionscrapperapi",
+  "name": "juniapocketapi",
   "version": "1.0.0",
-  "description": "Fetch data from aurion.junia.com",
-  "main": "server.js",
+  "description": "Your study companion.",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
   "repository": {
     "type": "git",
-    "url": "\u0016https://github.com/DanielArian/aurion-scrapper-api"
+    "url": "\u0016https://github.com/DanielArian/JuniaPocket-API"
   },
   "author": "Daniel ARIAN, ISEN Lille",
   "license": "ISC",
