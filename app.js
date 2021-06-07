@@ -26,6 +26,7 @@ app.use(middlewares.auth);
 app.use('/marks', routes.marks);
 app.use('/planning', routes.planning);
 
-app.listen(config.port, function() {
-    console.log(`Listening on Port ${config.port}`);
+port = config.port || 80 ;
+app.listen(port , function() {
+    console.log(`Listening on Port ${port}`);
 });

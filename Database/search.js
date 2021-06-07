@@ -11,12 +11,12 @@ exports.findUserByAurionIDInCollection = async (userAurionID, collectionModel) =
 
     try {
         let data = await collectionModel.findOne({aurionID: userAurionID});
-        console.log(`Document ${data.constructor.modelName} de ${userAurionID} trouvé.`);
         if(!data) {
             // No data found (car !data = true si data = null )
-            console.log(`findUserByAurionIDInCollection --> Utilisateur ${userAurionID} non trouvé dans la collection  ${data.constructor.modelName}s.`);
+            console.log(`findUserByAurionIDInCollection --> Utilisateur ${userAurionID} non trouvé dans la collection.`);
             return 'USER_DOES_NOT_EXIST_IN_COLLECTION';
         }
+        console.log(`Document ${data.constructor.modelName} de ${userAurionID} trouvé.`);
         return data;
     } catch (error) {
         console.log(`findUserByAurionIDInCollection error --> ${error}`);

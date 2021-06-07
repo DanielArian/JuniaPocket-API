@@ -11,7 +11,7 @@ exports.auth = (req, res, next) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; // Authorization: 'Bearer TOKEN'
         if (!token) {
-            throw new Error('Echec Authentication !');
+            res.status(sCode.unauthorized).json({error: 'Echec authentification !'});
         }
         const verified = jwt.verify(token, config.JWTSecret);
         req.user = verified;
