@@ -83,9 +83,9 @@ exports.login = async (req, res, next) => {
         const payload = {
             aurionID: userDoc.aurionID
         }
-        const secret = config.JWTSecret;
+        const secret = process.env.JWT_SECRET || config.JWTSecret;
         const options = {
-            expiresIn: config.JWTExpirationTime
+            expiresIn: process.env.JWT_EXPIRATION_TIME || config.JWTExpirationTime
         }
         return res.status(sCode.OK).json({
             userID: userDoc._id,

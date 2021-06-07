@@ -9,8 +9,6 @@ const middlewares = require('./Middlewares/index');
 const dbConnection = require('./databaseConnection');
 const dbUsername =  process.env.DB_USERNAME || config.dbUsername;
 const dbPassword =  process.env.DB_PASSWORD || config.dbPassword;
-
-console.log(`mongodb+srv://${dbUsername}:${dbPassword}@juniapocket.1vwtr.mongodb.net/data?retryWrites=true&w=majority`)
 const URI = `mongodb+srv://${dbUsername}:${dbPassword}@juniapocket.1vwtr.mongodb.net/data?retryWrites=true&w=majority`
 dbConnection.connectToMongoDB(URI);
 
