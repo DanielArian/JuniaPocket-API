@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const MarkModel = require('./Models/mark');
 
-exports.createMarkDocument =  function (studentAurionID, markResponse) {
+function createMarkDocument (studentAurionID, markResponse) {
     /**
      * @param {String} studentAurionID - Identifiant aurion
      * @param {Object} markResponse - Réponse de l'API AurionScrapper après demande de notes
@@ -18,7 +18,8 @@ exports.createMarkDocument =  function (studentAurionID, markResponse) {
     return doc;
 }
 
-exports.saveMarkDocument = function (doc) {
+
+function saveMarkDocument (doc) {
     doc.save((err, insertedDoc) => {
         if (err) {
             console.error(err, insertedDoc);
@@ -32,7 +33,7 @@ exports.saveMarkDocument = function (doc) {
 }
 
 
-exports.getStudentMarkDoc = async function (studentAurionID) {
+async function getStudentMarkDoc (studentAurionID) {
     /**
      * @param {String} studentAurionID
      * @return {Object} Renvoie :
@@ -52,14 +53,14 @@ exports.getStudentMarkDoc = async function (studentAurionID) {
             console.log(`Document de notes de l'étudiant ${studentAurionID} récupéré dans la collection "marks".`)
             resolve(doc);
         } catch (error) {
-            console.log(error);
+            console.log(`getStudentMarkDoc error --> ${error}`);
             reject('ERROR');
         }
     });
 }
 
 
-exports.getStudentMarks = async function (studentAurionID) {
+async function getStudentMarks (studentAurionID) {
     /**
      * 
      * @param {String} studentAurionID
@@ -76,13 +77,13 @@ exports.getStudentMarks = async function (studentAurionID) {
         if (doc == 'ERROR') return 'ERROR';
         else return doc.marks;
     } catch (error) {
-        console.log(error);
-        reject('ERROR');
+        console.log(`getStudentMarks error --> ${error}`);
+        return 'ERROR';
     }
 }
 
 
-exports.updateMarkDocument = function (studentAurionID, updatedMarkResponse) {
+function updateMarksInDoc (studentAurionID, updatedMarkResponse) {
 
     MarkModel.updateOne({aurionID: studentAurionID }, 
         {$set: {
@@ -96,4 +97,13 @@ exports.updateMarkDocument = function (studentAurionID, updatedMarkResponse) {
                 console.log("Original Doc : ", docs);
             }
         });
+}
+
+
+module.exports = {
+    createMarkDocument,
+    saveMarkDocument,
+    getStudentMarkDoc,
+    getStudentMarks,
+    updateMarksInDoc
 }

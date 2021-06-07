@@ -15,8 +15,12 @@ exports.logRequest = (req, res, next) => {
     return midlw('logRequest', req, res, next);
 }
 
-exports.requireBodyParam = (req, res, next) => {
-    return midlw('requireBodyParam', req, res, next);
+exports.requireSignupParam = (req, res, next) => {
+    return midlw('requireSignupParam', req, res, next);
+}
+
+exports.requireLoginParam = (req, res, next) => {
+    return midlw('requireLoginParam', req, res, next);
 }
 
 exports.auth = (req, res, next) => {

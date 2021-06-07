@@ -1,15 +1,12 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const fetch = require('../AurionScrapperCore/fetch');
-
 const config = require('../Config/index');
-
 const sCode = require('../httpStatus');
 
-const search = require('../Database/search');
-const manageUser = require('../Database/manageUser');
-const UserModel = require('../Database/Models/user');
+const db = require('../Database/index');
+const aurionScrapper = require('../AurionScrapperCore/index');
+
 
 exports.signup = async (req, res, next) => {
 
@@ -22,7 +19,7 @@ exports.signup = async (req, res, next) => {
     // Verification des identifiants Aurion, et si valides, recuperation du nom de l'utilisateur
     let realName = '';
     try {
-        let name = await fetch.checkAurionIDAndGetNameIfOk(aurionID, aurionPassword);
+        let name = await aurionScrapper.fetch.checkAurionIDAndGetNameIfOk(aurionID, aurionPassword);
         if (name == 'INVALID') {
             return res.status(sCode.unauthorized).json({error: 'Login ou mot de passe Aurion invalide'});
         }
@@ -45,8 +42,8 @@ exports.signup = async (req, res, next) => {
 
     // Sauvegarde de l'utilisateur dans la Database
     try {
-        let userDoc = manageUser.createUserDocument(aurionID, aurionPassword, jpPasswordHashed, realName);
-        manageUser.saveUser(userDoc);
+        let userDoc = db.manageUser.createUserDocument(aurionID, aurionPassword, jpPasswordHashed, realName);
+        db.manageUser.saveUser(userDoc);
         return res.status(sCode.created).json({message: `Utilisateur créé`})
     } catch (error) {
         console.log(`signup error --> ${error}.`);
@@ -54,14 +51,13 @@ exports.signup = async (req, res, next) => {
     }
 }
 
-
 exports.login = async (req, res, next) => {
 
     // On vérifie que l'utilisateur est bien inscrit
     // Si oui, on récupère ses infos
     var userDoc;
     try {
-        let result = await search.findUserByAurionIDInCollection(req.body.aurionID, UserModel);
+        let result = await db.search.findUserByAurionIDInCollection(req.body.aurionID, db.Models.User);
         if (result == 'USER_DOES_NOT_EXIST_IN_COLLECTION') {
             return res.status(sCode.unauthorized).json({error: 'Utilisateur non trouvé !'});
         }
@@ -82,11 +78,11 @@ exports.login = async (req, res, next) => {
         // Connexion réussie : on envoie un token JWT
         const payload = {
             aurionID: userDoc.aurionID
-        }
+        };
         const secret = process.env.JWT_SECRET || config.JWTSecret;
         const options = {
             expiresIn: process.env.JWT_EXPIRATION_TIME || config.JWTExpirationTime
-        }
+        };
         return res.status(sCode.OK).json({
             userID: userDoc._id,
             aurionID: userDoc.aurionID,

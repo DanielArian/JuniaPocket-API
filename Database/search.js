@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-exports.findUserByAurionIDInCollection = async (userAurionID, collectionModel) => {
+exports.findUserByAurionIDInCollection = async (userAurionID, collectionModelObject) => {
     /**
      * Recherche un utilisateur dans la collection 'users'
      * Retourne :
@@ -10,7 +10,7 @@ exports.findUserByAurionIDInCollection = async (userAurionID, collectionModel) =
      */
 
     try {
-        let data = await collectionModel.findOne({aurionID: userAurionID});
+        let data = await collectionModelObject.findOne({aurionID: userAurionID});
         if(!data) {
             // No data found (car !data = true si data = null )
             console.log(`findUserByAurionIDInCollection --> Utilisateur ${userAurionID} non trouvé dans la collection.`);
