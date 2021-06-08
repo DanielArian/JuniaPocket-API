@@ -3,7 +3,6 @@ const sCode = require('../httpStatus');
 
 const db = require('../Database/index');
 const aurionScrapper = require('../AurionScrapperCore/index');
-const { saveMarkDocument } = require('../Database/manageMark');
 
 
 exports.getMarks = async (req, res) => {
@@ -14,7 +13,7 @@ exports.getMarks = async (req, res) => {
 
     // On vérifie si l'user a déjà des notes existantes dans la database
     // Si oui, on renvoie ces notes et la requete s'arrete là.
-    // Si non, on récupère ses notes sur Aurion et on les stocke dans notre BDD
+    // Si non, on récupère ses notes sur Aurion, on les stocke dans notre BDD puis on renvoie les notes
 
     let marksData;
     try {
@@ -48,7 +47,7 @@ exports.getMarks = async (req, res) => {
         // On les sauvegarde dans la Database pour les prochaines requetes
         try {
             let MarkDoc = db.manageMark.createMarkDocument(aurionID, marksOfUser);
-            db.manageMark.saveMarkDocument(MarkDoc);
+            db.save.saveDoc(MarkDoc);
         } catch (error) {
             console.log(`getMarks error --> Echec sauvegarde des notes de ${aurionID} dans Marks --> ${error}`)
             return res.status(sCode.unauthorized).json({error});

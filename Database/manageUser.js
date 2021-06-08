@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const db = require('./index');
+const save = require('./save');
 
 function createUserDocument (userAurionID, aurionPassword, hashedPassword, realName) {
     /**
@@ -22,18 +23,12 @@ function createUserDocument (userAurionID, aurionPassword, hashedPassword, realN
 }
 
 
-function saveUser (doc) {
-    doc.save((err, insertedDoc) => {
-        if (err) {
-            console.error(err, insertedDoc);
-            return false;
-        }
-        // This will print inserted record from database
-        console.log(`saveUser --> Sauvegarde d'un document User pour ${insertedDoc.aurionID} dans la collection "user".`);
-        // console.log(insertedDoc)
-        return true;
-      });
-}
+async function saveUserDoc (doc) {
+    /**
+     * @return {BOOL} 
+     */
+    return save.saveDoc(doc);
+};
 
 
 async function getAurionPassword(aurionID) {
@@ -54,6 +49,6 @@ async function getAurionPassword(aurionID) {
 
 module.exports = {
     createUserDocument,
-    saveUser,
+    saveUserDoc,
     getAurionPassword
 }

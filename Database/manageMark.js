@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const db = require('./index');
+const save = require('./save');
 const MarkModel = require('./Models/mark');
 
 function createMarkDocument (studentAurionID, markResponse) {
@@ -16,20 +18,6 @@ function createMarkDocument (studentAurionID, markResponse) {
     {collection: 'mark'});
     console.log(`Création d'un document pour ${studentAurionID} dans la collection "marks".`)
     return doc;
-}
-
-
-function saveMarkDocument (doc) {
-    doc.save((err, insertedDoc) => {
-        if (err) {
-            console.error(err, insertedDoc);
-            return false;
-        }
-        // This will print inserted record from database
-        console.log("Document ajoute avec succes !");
-        // console.log(insertedDoc)
-        return true;
-      });
 }
 
 
@@ -102,7 +90,6 @@ function updateMarksInDoc (studentAurionID, updatedMarkResponse) {
 
 module.exports = {
     createMarkDocument,
-    saveMarkDocument,
     getStudentMarkDoc,
     getStudentMarks,
     updateMarksInDoc

@@ -26,3 +26,11 @@ exports.requireLoginParam = (req, res, next) => {
 exports.auth = (req, res, next) => {
     return midlw('auth', req, res, next);
 }
+
+exports.requireExistingMarkDoc = (req, res, next) => {
+    return midlw('requireExistingMarkDoc', req, res, next);
+}
+
+exports.requireWeekDate = (req, res, next) => {
+    return midlw('requireExistingMarkDoc', req, res, next);
+}

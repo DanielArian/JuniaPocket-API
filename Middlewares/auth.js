@@ -8,6 +8,7 @@ const config = require('../Config/index');
 const sCode = require('../httpStatus');
 
 exports.auth = (req, res, next) => {
+    console.log('------ Inside Middleware: auth ');
     // Nécessite d'envoyer le Bearer Token dans le headers authorization
 
     try {

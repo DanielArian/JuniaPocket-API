@@ -43,7 +43,7 @@ exports.signup = async (req, res, next) => {
     // Sauvegarde de l'utilisateur dans la Database
     try {
         let userDoc = db.manageUser.createUserDocument(aurionID, aurionPassword, jpPasswordHashed, realName);
-        db.manageUser.saveUser(userDoc);
+        db.save.saveDoc(userDoc);
         return res.status(sCode.created).json({message: `Utilisateur créé`})
     } catch (error) {
         console.log(`signup error --> ${error}.`);

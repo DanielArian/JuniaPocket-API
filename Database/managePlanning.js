@@ -20,7 +20,7 @@ function createPlanningDocument(aurionID, planningResponse) {
 
 function updatePlanningDocument(studentAurionID, updatedMarkResponse) {
 
-    try { 
+    try {
         MarkModel.updateOne({aurionID: studentAurionID }, 
         {$set: {
             'weeks': updatedMarkResponse
@@ -36,4 +36,9 @@ function updatePlanningDocument(studentAurionID, updatedMarkResponse) {
     } catch (error) {
         console.log(error);
     }
+}
+
+module.exports = {
+    createPlanningDocument,
+    updatePlanningDocument
 }

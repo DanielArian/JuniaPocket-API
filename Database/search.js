@@ -16,7 +16,7 @@ exports.findUserByAurionIDInCollection = async (userAurionID, collectionModelObj
             console.log(`findUserByAurionIDInCollection --> Utilisateur ${userAurionID} non trouvé dans la collection.`);
             return 'USER_DOES_NOT_EXIST_IN_COLLECTION';
         }
-        console.log(`Document ${data.constructor.modelName} de ${userAurionID} trouvé.`);
+        console.log(`findUserByAurionIDInCollection --> Document ${data.constructor.modelName} de ${userAurionID} trouvé.`);
         return data;
     } catch (error) {
         console.log(`findUserByAurionIDInCollection error --> ${error}`);

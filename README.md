@@ -9,7 +9,7 @@ Interroger le serveur : https://juniapocketapi.herokuapp.com
 
 Envoyer ces infos en POST au chemin `/user/signup`
 
-```json
+```
 {
   aurionID: <value>,
   aurionPassword: <value>,
@@ -41,4 +41,3 @@ Status Code : 201
   message: `Utilisateur créé`
 }
 ```
-
