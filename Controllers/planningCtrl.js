@@ -37,7 +37,8 @@ exports.getPlanningOfWeek = async (req, res) => {
             return res.status(sCode.serverError).json({error});
         }
 
-        // Ajout dans la Databas
+        // Ajout dans la Database de la semaine récup
+        
 
     }
 
