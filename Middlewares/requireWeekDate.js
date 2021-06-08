@@ -48,14 +48,12 @@ function isDateFormatCorrect(date) {
 }
 
 exports.requireWeekDate = (req, res, next) => {
-    console.log('------ Inside Middleware: requireWeekDate ');
     /**
      * Vérifie que le body de la requete a bien une key 'date' et qu'elle
      * est bien au format 'jj/mm/aaaa'
      */
     let aurionID = req.user.aurionID; // existe car l'user s'est auth (cf auth.js)
 
-    console.log(req.body);
     if (req.body.hasOwnProperty('date')) {
         if (isDateFormatCorrect(req.body.date)) {
             next();

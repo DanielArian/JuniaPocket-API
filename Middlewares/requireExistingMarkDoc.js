@@ -2,7 +2,6 @@ const sCode = require('../httpStatus');
 const db = require('../Database/index');
 
 exports.requireExistingMarkDoc = async (req, res, next) => {
-    console.log('------ Inside Middleware: requireExistingMarkDoc ');
 
     let aurionID = req.user.aurionID;
     let userMarkDoc = await db.search.findUserByAurionIDInCollection(aurionID, db.Models.Mark);

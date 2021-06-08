@@ -32,5 +32,9 @@ exports.requireExistingMarkDoc = (req, res, next) => {
 }
 
 exports.requireWeekDate = (req, res, next) => {
-    return midlw('requireExistingMarkDoc', req, res, next);
+    return midlw('requireWeekDate', req, res, next);
+}
+
+exports.requireUserNotAlreadyRegistered = (req, res, next) => {
+    return midlw('requireUserNotAlreadyRegistered', req, res, next);
 }

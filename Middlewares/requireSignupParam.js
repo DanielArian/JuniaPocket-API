@@ -1,7 +1,7 @@
 const sCode = require('../httpStatus');
 
 exports.requireSignupParam = (req, res, next) => {
-    console.log('------ Inside Middleware: requireSignupParam ')
+
     if (req.body.hasOwnProperty('aurionID') &
         req.body.hasOwnProperty('aurionPassword') &
         req.body.hasOwnProperty('jpocketPassword')
