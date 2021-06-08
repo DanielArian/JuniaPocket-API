@@ -151,7 +151,7 @@ function responseWeekPlanning(htmlPlanningPage) {
         'weekNumber': w,
         'year': y,
         'beginDate': beginDate,
-        'data': WeekPlanning
+        'days': WeekPlanning
     };
     return Planning;
 }

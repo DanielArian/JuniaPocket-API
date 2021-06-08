@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const db = require('./index');
 const PlanningModel = require('./Models/planning');
 
 function createPlanningDocument(aurionID, planningResponse) {
@@ -88,8 +89,85 @@ async function getWeeks (studentAurionID) {
     }
 }
 
+
+function convertDateStringToUTCDate(date) {
+    /**
+     * Converti une chaine au format 'jj/mm/aaaa' en UTC Date String.
+     * Si la chaine donnée en argument est vide, on renvoie
+     * la date du jour en UTC Date String initialisée à minuit.
+     */
+    // Conversion de la date en Date Object
+    let utcDateObject;
+    if (date == '') {
+        let jetlag = 2;
+        dateNow = new Date()
+        utcDateNow = Date.UTC(dateNow.getUTCFullYear(), dateNow.getUTCMonth(), dateNow.getUTCDate(), dateNow.getUTCHours() + jetlag, dateNow.getUTCMinutes(), dateNow.getUTCSeconds())
+        utcDateObject = new Date(new Date(utcDateNow).setUTCHours(0, 0, 0));
+    }
+    else {
+        let [day, month, year] = date.split('/');
+        utcDateObject = new Date(Date.UTC(year, Number(month) - 1, day));
+    }
+    return utcDateObject;
+}
+
+
+async function findWeekPlanningFromDate(aurionID, date) {
+    /**
+     * Recherche parmi les semaines enregistrés dans la database
+     * celle qui contient la date donnée en argument (au format 'jj/mm/yyyy').
+     * 
+     * Renvoie l'Object de l'array 'weeks' qui contient cette date
+     * Si cette date n'est présente dans aucune semaine sauvegardée,
+     * renvoie null.
+     */
+
+    let utcDateObject = convertDateStringToUTCDate(date);
+
+    // Si c'est un dimanche, on recule d'un jour car dans la 
+    // Database, une semaine va du lundi au samedi
+    if (utcDateObject.getDay() == 0) {
+        utcDateObject.setDate(utcDateObject.getDate() - 1);
+    }
+
+    let utcDateString = utcDateObject.toUTCString();
+    
+    // On récupère la liste des semaines dispo dans la BDD pour l'user
+    let Weeks = await getWeeks(aurionID);
+    if (Weeks == 'ERROR' || Weeks == []) {
+        console.log(`findWeekPlanningFromDate error --> Aucune semaine trouvée dans le Planning Doc de ${aurionID} contenant ${utcDateString}`);
+        return null;
+    }
+    // Parmi les semaines dispo sur la BDD pour l'user, on cherche s'il y
+    // en a une qui contient la date demandée
+    for (w of Weeks) {
+        if (Object.keys(w.days).includes(utcDateString)) {
+            console.log(`findWeekPlanningFromDate --> semaine du ${utcDateString} trouvée dans le Planning Doc de ${aurionID}`);
+            return w;
+        }
+    }
+    return null;
+}
+
+
+async function addWeekToPlanningDoc(aurionID, weekToAdd) {
+
+    let userPlanningDoc = await getUserPlanningDoc(aurionID);
+    if (userPlanningDoc != 'ERROR' || userPlanningDoc != null) {
+        userPlanningDoc.weeks.push(weekToAdd);
+        userPlanningDoc.weeks.sort(function(a, b) {
+            return (new Date(b.beginDate) - new Date(a.beginDate));
+        });
+        db.save.saveDoc(userPlanningDoc);
+        return true;
+    }
+    else return false;
+}
+
 module.exports = {
     createPlanningDocument,
     updatePlanningDocument,
-    getWeeks
+    getWeeks,
+    findWeekPlanningFromDate,
+    addWeekToPlanningDoc
 }
