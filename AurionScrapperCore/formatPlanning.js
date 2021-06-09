@@ -146,7 +146,7 @@ function responseWeekPlanning(htmlPlanningPage) {
     var parsedPage = cheerio.load(htmlPlanningPage);
     var WeekPlanning = getEventsOfAWeek(parsedPage);
     var [w, y] = getWeekNumber(parsedPage);
-    var beginDate = getDateOfISOWeek(w, y).toDateString().split('T')[0];
+    var beginDate = getDateOfISOWeek(w, y).toUTCString().split(' 00:')[0];
     var Planning = {
         'weekNumber': w,
         'year': y,

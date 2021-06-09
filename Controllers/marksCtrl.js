@@ -35,9 +35,12 @@ exports.getMarks = async (req, res) => {
             let aurionPassword = await db.manageUser.getAurionPassword(aurionID);
             if (aurionPassword == '') {
                 console.log(`getMarks --> Erreur dans la lecture du mdp aurion dans la collection User`)
-                return res.status(sCode.serverError).json({error});
+                return res.status(sCode.serverError).json({error:''});
             }
             let marksPageContent = await aurionScrapper.fetch.marks(aurionID, aurionPassword);
+            if (marksPageContent == 'Username ou mot de passe invalide.') {
+                return res.status(sCode.unauthorized).json({error: 'Les identifiants aurion ne sont plus valides.'})
+            }
             marksOfUser = aurionScrapper.formatMarks.getFormatedMarks(marksPageContent);
         } catch (error) {
             console.log(`getMarks error --> Echec de la récupération des notes Aurion de ${aurionID} -->  ${error}`)
@@ -73,7 +76,6 @@ exports.updateMarks = async (req, res) => {
     /**
      * UNIQUEMENT POUR LES UTILISATEURS AYANT UN DOC DANS LA
      * COLLECTION 'marks' !
-     * AJOUTER MIDDLEWARE POUR VERIFIER
      */
 
     // suite à l'authentification on récupère l'aurionID de l'utilisateur qui
@@ -91,6 +93,9 @@ exports.updateMarks = async (req, res) => {
             return res.status(sCode.serverError).json({error});
         }
         let marksPageContent = await aurionScrapper.fetch.marks(aurionID, aurionPassword);
+        if (marksPageContent == 'Username ou mot de passe invalide.') {
+            return res.status(sCode.unauthorized).json({error: 'Les identifiants aurion ne sont plus valides.'})
+        }
         marksOfUser = aurionScrapper.formatMarks.getFormatedMarks(marksPageContent);
     } catch (error) {
         console.log(`getMarks error --> Echec de la récupération des notes Aurion de ${aurionID} -->  ${error}`)
@@ -105,6 +110,6 @@ exports.updateMarks = async (req, res) => {
         return res.status(sCode.unauthorized).json({error});
     }
 
-    // On confirme l'update
-    return res.status(sCode.OK).json({message: true})
+    // On envoie les notes en guise de confirmation
+    return res.status(sCode.OK).send(JSON.stringify(marksOfUser));
 }

@@ -10,6 +10,7 @@ exports.getPlanningOfWeek = async (req, res) => {
     
     let aurionID = req.user.aurionID;   // assuré par le middleware auth.js
     let date = req.body.date;       // assuré par le middleware requireWeekDate.js
+                                    // au format jj/mm/aaaa
 
     // On récupère les éventuelles semaines sauvegardées dans la bdd par l'user
     let availableWeeks = await db.managePlanning.getWeeks(aurionID, db.Models.Planning);
@@ -35,6 +36,9 @@ exports.getPlanningOfWeek = async (req, res) => {
         let aurionPassword = await getAurionPassword(aurionID);
         console.log(`Connexion de ${aurionID} à Aurion...`);
         let planningPage = await aurionScrapper.fetch.planning(aurionID, aurionPassword, date);
+        if (planningPage == 'Username ou mot de passe invalide.') {
+            return res.status(sCode.unauthorized).json({error: 'Les identifiants aurion ne sont plus valides.'})
+        }
         requestedWeek = aurionScrapper.formatPlanning.responseWeekPlanning(planningPage);
     } catch (error) {
         console.log(`getPlanningOfWeek error --> Echec récupération planning aurion de ${aurionID} dans la semaine du ${date}`);
@@ -54,5 +58,56 @@ exports.getPlanningOfWeek = async (req, res) => {
     } catch (error) {
         console.log(`getPlanningOfWeek error --> Echec sauvegarde planning aurion de ${aurionID} dans la semaine du ${date}`);
         return res.status(sCode.serverError).json({ error });
+    }
+}
+
+
+exports.updateWeek = async (req, res) => {
+
+    let aurionID = req.user.aurionID;   // assuré par le middleware auth.js
+    let date = req.body.date;           // assuré par le middleware requireWeekDate.js
+                                        // au format jj/mm/aaaa
+
+    let weekToUpdate;
+
+    // On vérifie s'il existe bien une semaine à la date demandée dans la Database
+    let availableWeeks = await db.managePlanning.getWeeks(aurionID, db.Models.Planning);
+    if (availableWeeks.length == 0) {
+            return res.status(sCode.notFound).json({error: `Pas de semaine à la date du ${date} dans la Database`});
+    }
+    else {
+        weekToUpdate = await db.managePlanning.findWeekPlanningFromDate(aurionID, date);
+        if (!weekToUpdate) {    // semaine non existante dans la Database
+            return res.status(sCode.notFound).json({error: `Pas de semaine à la date du ${date} dans la Database`});
+        }
+    }
+
+    // Récupération Planning Semaine demandée sur Aurion
+    console.log(`Récupération du planning de ${aurionID} dans la semaine du ${date}`);
+    let requestedWeek;
+    try {
+        let aurionPassword = await getAurionPassword(aurionID);
+        console.log(`Connexion de ${aurionID} à Aurion...`);
+        let planningPage = await aurionScrapper.fetch.planning(aurionID, aurionPassword, date);
+        if (planningPage == 'Username ou mot de passe invalide.') {
+            return res.status(sCode.unauthorized).json({error: 'Les identifiants aurion ne sont plus valides.'})
+        }
+        requestedWeek = aurionScrapper.formatPlanning.responseWeekPlanning(planningPage);
+    } catch (error) {
+        console.log(`getPlanningOfWeek error --> Echec récupération planning aurion de ${aurionID} dans la semaine du ${date}`);
+        return res.status(sCode.serverError).json({ error });
+    }
+
+    try {
+        let boolModif = await db.managePlanning.updateWeek(aurionID, date, requestedWeek);
+        if (boolModif) {
+            console.log(`updateWeek --> Au moins une nouvelle modification de planning dans la semaine du ${date}`);
+            return res.status(sCode.created).send(JSON.stringify(requestedWeek));
+        }
+        console.log(`updateWeek --> Pas de modifications de planning dans la semaine du ${date}`);
+        return res.status(sCode.OK).send(JSON.stringify(requestedWeek));
+    } catch (error) {
+        console.log(error);
+        return res.status(sCode.serverError).send(JSON.stringify(error));
     }
 }
