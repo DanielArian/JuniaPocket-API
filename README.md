@@ -35,13 +35,16 @@ Data :
 ### Réponses possible
 
 Status Code : `401` (Unauthorized)
+
 Si l'identifiant ou le mot de passe Aurion fournis sont incorrects, il est impossible
 de créer un compte.
 
 Status Code : `201` (Created)
+
 Si Inscription réussie, user enregistré dans la collection 'users' dans la database.
 
 Status Code : `500` (Server Error)
+
 Il y a une erreur interne.
 
 ## Login <a name="login"></a>
