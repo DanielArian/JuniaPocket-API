@@ -22,6 +22,7 @@ Interroger le serveur : https://juniapocketapi.herokuapp.com
 ### Requête à effectuer 
 
 Methode : `POST`
+
 Route : `/user/signup`
 
 Data : 
@@ -46,6 +47,7 @@ Status Code : `500` (Server Error) / Il y a une erreur interne.
 ### Requête à effectuer 
 
 Methode : `POST`
+
 Route : `/user/login`
 
 Data : 
@@ -91,7 +93,9 @@ dans la BDD pour les prochaines fois.
 ### Requête à effectuer 
 
 Methode : `POST`
+
 Route : `/marks/get`
+
 A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
 
 Data : rien à envoyer
@@ -116,7 +120,9 @@ sur Aurion et mettre à jour les données de notes pour l'utilisateur dans la BD
 ### Requête à effectuer 
 
 Methode : `POST`
+
 Route : `/marks/update`
+
 A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
 
 Data : rien à envoyer
