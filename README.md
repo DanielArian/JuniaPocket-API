@@ -21,6 +21,7 @@ Interroger le serveur : https://juniapocketapi.herokuapp.com
 
 ### Requête à effectuer 
 
+Methode : `POST`
 Route : `/user/signup`
 
 Data : 
@@ -32,7 +33,7 @@ Data :
 }
 ```
 
-### Réponses possible
+### Réponses possibles
 
 Status Code : `201` (Created) / Si Inscription réussie, user enregistré dans la collection 'users' dans la database.
 
@@ -44,6 +45,7 @@ Status Code : `500` (Server Error) / Il y a une erreur interne.
 
 ### Requête à effectuer 
 
+Methode : `POST`
 Route : `/user/login`
 
 Data : 
@@ -54,7 +56,7 @@ Data :
 }
 ```
 
-### Réponses possible
+### Réponses possibles
 
 Status Code : `201` (Created) / Connexion réussie. Le serveur renvoie ces infos à récupérer :
 
@@ -78,7 +80,56 @@ Et d'autres erreur diverses ...
 
 ## Récupération des notes <a name="recup-notes"></a>
 
+Pour un utilisateur authentifié (via token), on lit dans la BDD les notes
+qui sont enregistrées dans son document de la collection 'marks' puis on
+les renvoie au client.
+
+Si c'est la première fois que l'utilisateur utilise cette requête,
+le serveur récupère les notes de l'utilisateur sur Aurion et les sauvegarde
+dans la BDD pour les prochaines fois.
+
+### Requête à effectuer 
+
+Methode : `POST`
+Route : `/marks/get`
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
+Data : rien à envoyer
+
+### Réponse attendue
+
+Status Code : `200` (OK) 
+
+Data : un Array contenant des Objets regroupant toutes les infos des notes disponibles
+dans la BDD (ou sur le compte aurion de l'utilisateur si c'est la 1ere fois que cette
+requête est effectuée). Les clés des objects peuvent varier entre les utilisateurs.
+
+Pour récupérer la liste des clés : `Object.keys(responseData)`
+
+
 ## Vérifier si de nouvelles notes ont été ajoutées <a name="fetch-notes"></a>
+
+Cette requête n'est à effectuer QUE pour un utilisateur ayant déjà utilisée
+la requête précedente. Elle permet de lancer une nouvelle récupération des notes
+sur Aurion et mettre à jour les données de notes pour l'utilisateur dans la BDD.
+
+### Requête à effectuer 
+
+Methode : `POST`
+Route : `/marks/update`
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
+Data : rien à envoyer
+
+### Réponse attendue
+
+Status Code : `200` (OK) 
+
+Data : un Array contenant des Objets regroupant toutes les infos des notes disponibles
+sur le compte aurion de l'utilisateur. Les clés peuvent varier selon les utilisateurs.
+
+Pour récupérer la liste des clés : `Object.keys(responseData)`
+
 
 ## Planning <a name="planning"></a>
 
