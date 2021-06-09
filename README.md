@@ -141,4 +141,36 @@ Pour récupérer la liste des clés : `Object.keys(responseData)`
 
 ## Récupération Planning <a name="recup-planning"></a>
 
+La récupération d'un planning se fait semaine par semaine.
+
+Pour un utilisateur authentifié (via token), on lit dans la BDD les semaines
+qui sont enregistrées dans son document de la collection 'plannings' puis on
+renvoie la semaine demandée.
+
+Si c'est la première fois que l'utilisateur utilise cette requête,
+le serveur récupère la semaine demandée par l'utilisateur sur Aurion
+et la sauvegarde dans la BDD pour les prochaines fois.
+
+### Requête à effectuer 
+
+Methode : `POST`
+
+Route : `/planning/get-week`
+
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
+Data : 
+```js
+{
+  date: <jj/mm/aaaa>
+}
+```
+
+La valeur de `date` doit obligatoirement être au format `jj/mm/aaaa` et le serveur
+renvoie le planning de toute la semaine incluant cette date.
+
+### Réponse attendue
+
+
+
 ## Vérifier s'il y a des modifications dans un planning <a name="fetch-planning"></a>
