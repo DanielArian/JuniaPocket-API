@@ -17,11 +17,11 @@ Projet en cours de développement.
 
 Interroger le serveur : https://juniapocketapi.herokuapp.com
 
-###  Gestion des utilisateurs <a name="utilisateurs"></a>
+##  Gestion des utilisateurs <a name="utilisateurs"></a>
 
-#### Inscription <a name="inscription"></a>
+## Inscription <a name="inscription"></a>
 
-##### Requête à effectuer 
+### Requête à effectuer 
 
 Route : `/user/signup`
 
@@ -38,16 +38,16 @@ test
 
 
 
-#### Login <a name="login"></a>
+### Login <a name="login"></a>
 
-### Notes <a name="notes"></a>
+## Notes <a name="notes"></a>
 
-#### Récupération des notes <a name="recup-notes"></a>
+### Récupération des notes <a name="recup-notes"></a>
 
-#### Vérifier si de nouvelles notes ont été ajoutées <a name="fetch-notes"></a>
+### Vérifier si de nouvelles notes ont été ajoutées <a name="fetch-notes"></a>
 
-### Planning <a name="planning"></a>
+## Planning <a name="planning"></a>
 
-#### Récupération Planning <a name="recup-planning"></a>
+### Récupération Planning <a name="recup-planning"></a>
 
-#### Vérifier s'il y a des modifications dans un planning <a name="fetch-planning"></a>
+### Vérifier s'il y a des modifications dans un planning <a name="fetch-planning"></a>
