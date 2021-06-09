@@ -34,20 +34,45 @@ Data :
 
 ### Réponses possible
 
-Status Code : `401` (Unauthorized)
+Status Code : `201` (Created) / Si Inscription réussie, user enregistré dans la collection 'users' dans la database.
 
-Si l'identifiant ou le mot de passe Aurion fournis sont incorrects, il est impossible
-de créer un compte.
+Status Code : `401` (Unauthorized) / Si l'identifiant ou le mot de passe Aurion fournis sont incorrects, il est impossible de créer un compte.
 
-Status Code : `201` (Created)
-
-Si Inscription réussie, user enregistré dans la collection 'users' dans la database.
-
-Status Code : `500` (Server Error)
-
-Il y a une erreur interne.
+Status Code : `500` (Server Error) / Il y a une erreur interne.
 
 ## Login <a name="login"></a>
+
+### Requête à effectuer 
+
+Route : `/user/login`
+
+Data : 
+```js
+{
+  aurionID: <votre_identifiant_sur_Aurion>,
+  jpocket: <votre_mdp_JuniaPocket>
+}
+```
+
+### Réponses possible
+
+Status Code : `201` (Created) / Connexion réussie. Le serveur renvoie ces infos à récupérer :
+
+```js
+{
+  user._id: <value>,
+  aurionID: <value>;
+  token: <value>
+}
+```
+
+Ce token JWT vous permettra de vous authenfier pour les réquêtes nécessitant un droit d'accès.
+
+Status Code : `401` (Unauthorized) / Utilisateur non trouvé ou mot de passe JuniaPocket incorrect.
+
+Status Code : `500` (Server Error) / Il y a une erreur interne.
+
+Et d'autres erreur diverses ...
 
 ## Notes <a name="notes"></a>
 
