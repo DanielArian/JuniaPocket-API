@@ -1,43 +1,53 @@
-# aurion-scrapper-api
+# Junia Pocket API
 Projet en cours de développement.
 
-## Pour vos tests
+## Documentation
+
+1. [Gestion des utilisateurs](#utilisateurs)
+	1. [Inscription](#inscription)
+	2. [Login](#login)
+	
+2. [Notes](#notes)
+  1. [Récupération des notes](#recup-notes)
+  2. [Vérifier si de nouvelles notes ont été ajoutées](#fetch-notes)
+
+3. [Planning](#planning)
+  1. [Récupération des Planning](#recup-planning)
+  2. [Vérifier s'il y a des modifications dans un planning](#fetch-planning)
 
 Interroger le serveur : https://juniapocketapi.herokuapp.com
 
-### Signup
+###  Gestion des utilisateurs <a name="utilisateurs"></a>
 
-Envoyer ces infos en POST au chemin `/user/signup`
+#### Inscription <a name="inscription"></a>
 
-```
+##### Requête à effectuer 
+
+Route : `/user/signup`
+
+Data : 
+```js
 {
-  aurionID: <value>,
-  aurionPassword: <value>,
-  jpocketPassword: <value>
+  aurionID: <votre_identifiant_sur_Aurion>,
+  aurionPassword: <votre_mdp_sur_Aurion>;
+  jpocket: <choisir_un_mdp_pour_se_connecter_a_JuniaPocket>
 }
 ```
 
-Il faut s'attendre aux réponses : 
+test
 
-Une erreur interne de serveur, repérable par le status code 500 de la réponse, qui contiendra en données :
 
-```json
-{
-  error:
-}
-```
 
-Status Code : 401
+#### Login <a name="login"></a>
 
-```json
-{
-  error: 'Login ou mot de passe Aurion invalide'
-}```
+### Notes <a name="notes"></a>
 
-Status Code : 201
+#### Récupération des notes <a name="recup-notes"></a>
 
-```json
-{
-  message: `Utilisateur créé`
-}
-```
+#### Vérifier si de nouvelles notes ont été ajoutées <a name="fetch-notes"></a>
+
+### Planning <a name="planning"></a>
+
+#### Récupération Planning <a name="recup-planning"></a>
+
+#### Vérifier s'il y a des modifications dans un planning <a name="fetch-planning"></a>
