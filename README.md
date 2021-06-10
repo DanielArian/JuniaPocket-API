@@ -169,7 +169,7 @@ Data :
 La valeur de `date` doit obligatoirement être au format `jj/mm/aaaa` et le serveur
 renvoie le planning de toute la semaine incluant cette date.
 
-REMARQUE IMPORTANTE : la valeur de `date` est laissée vide (une chaine vide), c'est
+REMARQUE IMPORTANTE : Si la valeur de `date` est laissée vide (une chaine vide), c'est
 la semaine actuelle qui va être récupérée.
 
 ### Réponse attendue
