@@ -200,3 +200,28 @@ Donc si l'utilisateur renseigne un mail et un psid, alors il recevra une notific
 
 Pour renseigner ces informations, utiliser la requête suivante.
 
+### Requête à effectuer 
+
+Methode : `POST`
+
+Route : `/user/preferences/notifications`
+
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
+Data : 
+```js
+{
+  messengerPSID: <value>,
+  mail: <value>
+}
+```
+
+La valeur de `messengerPSID` s'obtient en envoyant le message "Je voudrais mon code" au Bot Facebook [JuniaPocket](https://www.facebook.com/JuniaPocket).
+
+### Réponse attendue
+
+Status Code : `200` (OK) et en réponse : `{message: 'Preferences mises à jour !'}`
+
+Status Code : `400` (Bad Request)
+
+Satus Code : `500` (Server Error)
