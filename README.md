@@ -165,7 +165,8 @@ A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
 Data : 
 ```js
 {
-  date: <jj/mm/aaaa>
+  date: <jj/mm/aaaa>,
+  notification: <true_or_false>
 }
 ```
 
@@ -177,8 +178,36 @@ la semaine actuelle qui va être récupérée.
 
 ### Réponse attendue
 
+A compteter
+
 
 ## Vérifier s'il y a des modifications dans un planning <a name="fetch-planning"></a>
+
+### Requête à effectuer 
+
+Methode : `POST`
+
+Route : `/planning/update`
+
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
+Data : 
+```js
+{
+  date: <jj/mm/aaaa>,
+}
+```
+
+La valeur de `date` doit obligatoirement être au format `jj/mm/aaaa`, le serveur
+renvoie le planning de toute la semaine incluant cette date après avoir mis à jour
+la Database.
+
+REMARQUE IMPORTANTE : Si la valeur de `date` est laissée vide (une chaine vide), c'est
+la semaine actuelle qui va être récupérée.
+
+### Réponse attendue
+
+Même type de réponse que la requête précédente.
 
 ## Notifications <a name="notifications"></a>
 
@@ -196,7 +225,8 @@ A l'inscription d'un nouvel utilisateur, un document est initialisé dans la col
 
 A noter pour la suite que si un champs n'est pas laissé vide alors il sera utilisé.
 Donc si l'utilisateur renseigne un mail et un psid, alors il recevra une notification
-à la fois par mail et sur messenger.
+à la fois par mail et sur messenger. De la même façon, si ces champs sont laissés vides,
+aucune notification sera envoyée à l'utilisateur.
 
 Pour renseigner ces informations, utiliser la requête suivante.
 
