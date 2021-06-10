@@ -12,12 +12,15 @@ Projet en cours de développement.
 3. [Planning](#planning)
   1. [Récupération des Planning](#recup-planning)
   2. [Vérifier s'il y a des modifications dans un planning](#fetch-planning)
+4. [Notifications](#notifications)
 
 Interroger le serveur : https://juniapocketapi.herokuapp.com
 
 ##  Gestion des utilisateurs <a name="utilisateurs"></a>
 
 ## Inscription <a name="inscription"></a>
+
+Enregistrement de l'utilisateur sur JuniaPocjet.
 
 ### Requête à effectuer 
 
@@ -175,5 +178,19 @@ la semaine actuelle qui va être récupérée.
 ### Réponse attendue
 
 
-
 ## Vérifier s'il y a des modifications dans un planning <a name="fetch-planning"></a>
+
+## Notification <a name="notifications"></a>
+
+A l'inscription d'un nouvel utilisateur, un document est initialisé dans la collection
+'notification preferences'. Il contient les informations suivantes :
+
+```js
+{
+  _id: <value>
+  aurionID: <value>
+  messengerPSID: '',
+  mail: ''
+}
+```
+
