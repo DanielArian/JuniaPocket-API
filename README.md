@@ -54,7 +54,7 @@ Data :
 ```js
 {
   aurionID: <votre_identifiant_sur_Aurion>,
-  jpocket: <votre_mdp_JuniaPocket>
+  jpocketPassword: <votre_mdp_JuniaPocket>
 }
 ```
 
