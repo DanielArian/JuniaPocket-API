@@ -14,6 +14,7 @@
   "author": "Daniel ARIAN, ISEN Lille",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "cheerio": "^1.0.0-rc.9",
