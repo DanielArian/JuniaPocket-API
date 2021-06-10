@@ -4,14 +4,14 @@ Projet en cours de développement.
 ## Documentation
 
 1. [Gestion des utilisateurs](#utilisateurs)
-	1.1 [Inscription](#inscription)
-	1.2. [Login](#login)
+	  1. [Inscription](#inscription)
+	  2. [Login](#login)
 2. [Notes](#notes)
-  2.1 [Récupération des notes](#recup-notes)
-  2.2 [Vérifier si de nouvelles notes ont été ajoutées](#fetch-notes)
+    1. [Récupération des notes](#recup-notes)
+    2. [Vérifier si de nouvelles notes ont été ajoutées](#fetch-notes)
 3. [Planning](#planning)
-  3.1 [Récupération des Planning](#recup-planning)
-  3.1 [Vérifier s'il y a des modifications dans un planning](#fetch-planning)
+    1. [Récupération des Planning](#recup-planning)
+    2. [Vérifier s'il y a des modifications dans un planning](#fetch-planning)
 4. [Notifications](#notifications)
 
 Interroger le serveur : https://juniapocketapi.herokuapp.com
