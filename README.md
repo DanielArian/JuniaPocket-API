@@ -30,7 +30,7 @@ Data :
 {
   aurionID: <votre_identifiant_sur_Aurion>,
   aurionPassword: <votre_mdp_sur_Aurion>;
-  jpocket: <choisir_un_mdp_pour_se_connecter_a_JuniaPocket>
+  jpocketPassword: <choisir_un_mdp_pour_se_connecter_a_JuniaPocket>
 }
 ```
 
