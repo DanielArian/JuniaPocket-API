@@ -96,3 +96,14 @@ exports.login = async (req, res, next) => {
         return res.status(sCode.serverError).json({error});
     }
 }
+
+
+exports.setNotificationsPreferences = async (req, res) => {
+    let aurionID = req.user.aurionID;
+    let PSID = req.body.messengerPSID;
+    let mail = req.body.mail;
+    if (db.manageNotifPreferences.setPreferences(aurionID, PSID, mail)) {
+        return res.status(sCode.OK).json({message: 'Preferences mises à jour !'})
+    }
+    return res.status(sCode.serverError).json({error: 'Server Error'});
+}

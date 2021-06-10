@@ -4,6 +4,7 @@ const WeekSchema = mongoose.Schema({
     weekNumber: String,
     year: String,
     beginDate: String,
+    lastUpdate: Date,
     days: Object
 },{ _id : false });
 

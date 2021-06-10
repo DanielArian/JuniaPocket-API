@@ -195,8 +195,8 @@ A l'inscription d'un nouvel utilisateur, un document est initialisé dans la col
 ```
 
 A noter pour la suite que si un champs n'est pas laissé vide alors il sera utilisé.
-Donc si l'utilisateur renseigne un mail et un psid alors il recevra une notification
-à la fois par mail et messenger.
+Donc si l'utilisateur renseigne un mail et un psid, alors il recevra une notification
+à la fois par mail et sur messenger.
 
-Libre à l'utilisateur de renseigner ces informations via les requêtes suivantes.
+Pour renseigner ces informations, utiliser la requête suivante.
 

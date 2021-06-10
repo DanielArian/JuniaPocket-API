@@ -38,3 +38,7 @@ exports.requireWeekDate = (req, res, next) => {
 exports.requireUserNotAlreadyRegistered = (req, res, next) => {
     return midlw('requireUserNotAlreadyRegistered', req, res, next);
 }
+
+exports.requireNotifPrefParam = (req, res, next) => {
+    return midlw('requireNotifPrefParam', req, res, next);
+}

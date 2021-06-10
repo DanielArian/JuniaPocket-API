@@ -14,6 +14,12 @@ const dbConnection = require('./databaseConnection');
 const URI = `mongodb+srv://${dbUsername}:${dbPassword}@juniapocket.1vwtr.mongodb.net/data?retryWrites=true&w=majority`
 dbConnection.connectToMongoDB(URI);
 
+// const notify = require('./notify');
+// var test = async () => {
+//     await notify("p64002", "TITRE", "CONTENU");
+// }
+// test();
+
 // Launch and config server
 var app = express();
 app.use(express.json());
@@ -29,7 +35,6 @@ app.use('/user', routes.user);
 app.use(mw.auth);
 app.use('/marks', routes.marks);
 app.use('/planning', routes.planning);
-
 
 app.listen(port , function() {
     console.log(`Listening on Port ${port}`);

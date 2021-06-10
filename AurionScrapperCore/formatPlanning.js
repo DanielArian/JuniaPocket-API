@@ -147,10 +147,14 @@ function responseWeekPlanning(htmlPlanningPage) {
     var WeekPlanning = getEventsOfAWeek(parsedPage);
     var [w, y] = getWeekNumber(parsedPage);
     var beginDate = getDateOfISOWeek(w, y).toUTCString().split(' 00:')[0];
+    var jetlag = 2;
+    var dateNow = new Date()
+    var utcDateNow = new Date(Date.UTC(dateNow.getUTCFullYear(), dateNow.getUTCMonth(), dateNow.getUTCDate(), dateNow.getUTCHours() + jetlag, dateNow.getUTCMinutes(), dateNow.getUTCSeconds()))
     var Planning = {
         'weekNumber': w,
         'year': y,
         'beginDate': beginDate,
+        'lastUpdate': utcDateNow,
         'days': WeekPlanning
     };
     return Planning;

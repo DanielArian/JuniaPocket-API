@@ -9,4 +9,6 @@ const userCtrl = require('../Controllers/userCtrl');
 router.post('/signup', mw.requireSignupParam, mw.requireUserNotAlreadyRegistered, userCtrl.signup);
 router.post('/login', mw.requireLoginParam, userCtrl.login);
 
+router.post('/preferences/notifications', mw.auth, mw.requireNotifPrefParam, userCtrl.setNotificationsPreferences);
+
 module.exports = router;

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const db = require('./index');
 const PlanningModel = require('./Models/planning');
+const lodash =  require('lodash');
 
 
 function convertDateStringToUTCDate(date) {
@@ -13,8 +14,8 @@ function convertDateStringToUTCDate(date) {
     let utcDateObject;
     if (date == '') {
         let jetlag = 2;
-        dateNow = new Date()
-        utcDateNow = Date.UTC(dateNow.getUTCFullYear(), dateNow.getUTCMonth(), dateNow.getUTCDate(), dateNow.getUTCHours() + jetlag, dateNow.getUTCMinutes(), dateNow.getUTCSeconds())
+        let dateNow = new Date()
+        let utcDateNow = Date.UTC(dateNow.getUTCFullYear(), dateNow.getUTCMonth(), dateNow.getUTCDate(), dateNow.getUTCHours() + jetlag, dateNow.getUTCMinutes(), dateNow.getUTCSeconds())
         utcDateObject = new Date(new Date(utcDateNow).setUTCHours(0, 0, 0));
     }
     else {
@@ -59,26 +60,21 @@ function updateWeek(aurionID, date, updatedWeek) {
 
     // Dans la liste weeks, on met à jour la liste days de la semaine à update
     try {
-        PlanningModel.updateOne({
+        return PlanningModel.updateMany({
             aurionID: aurionID,
             'weeks.beginDate': utcDateStringWithoutTime
         },
             {
                 $set: {
-                    'weeks.$.days': updatedWeek.days
+                    'weeks.$': updatedWeek
                 }
             },
             function (err, docs) {
                 if (err) {
                     console.log(err)
-                    return false;
                 }
                 else {
                     console.log("Original Doc : ", docs);
-                    if (docs.nModified > 0) {
-                        return true
-                    }
-                    return false;
                 }
             });
     } catch (error) {
@@ -190,10 +186,33 @@ async function addWeekToPlanningDoc(aurionID, weekToAdd) {
 }
 
 
+function getListOfModifiedDays(oldWeek, updatedWeek) {
+    /**
+     * @param {Array} oldWeek - week stockée dans la BDD
+     * @param {Array} updatedWeek - week récupérée et formatée par aurion Scrapper
+     * @return {Array} Liste vide si pas de changement, sinon liste des date dans la semaine
+     */
+
+    console.log('OLD: ', oldWeek);
+    console.log('UP: ', updatedWeek)
+    let listOfModifiedDays = [];
+    let datesOfTheWeek = Object.keys(oldWeek.days);
+    for (date of datesOfTheWeek) {
+        let isDiff = !lodash.isEqual(oldWeek.days[date], updatedWeek.days[date])
+        console.log(date, isDiff);
+        if (isDiff) {
+            listOfModifiedDays.push(date.split(' 00:')[0]);
+        }
+    }
+    return listOfModifiedDays;
+}
+
+
 module.exports = {
     createPlanningDocument,
     updateWeek,
     getWeeks,
     findWeekPlanningFromDate,
-    addWeekToPlanningDoc
+    addWeekToPlanningDoc,
+    getListOfModifiedDays
 }
