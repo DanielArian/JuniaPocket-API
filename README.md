@@ -180,7 +180,7 @@ la semaine actuelle qui va être récupérée.
 
 ## Vérifier s'il y a des modifications dans un planning <a name="fetch-planning"></a>
 
-## Notification <a name="notifications"></a>
+## Notifications <a name="notifications"></a>
 
 A l'inscription d'un nouvel utilisateur, un document est initialisé dans la collection
 'notification preferences'. Il contient les informations suivantes :
@@ -193,4 +193,10 @@ A l'inscription d'un nouvel utilisateur, un document est initialisé dans la col
   mail: ''
 }
 ```
+
+A noter pour la suite que si un champs n'est pas laissé vide alors il sera utilisé.
+Donc si l'utilisateur renseigne un mail et un psid alors il recevra une notification
+à la fois par mail et messenger.
+
+Libre à l'utilisateur de renseigner ces informations via les requêtes suivantes.
 
