@@ -104,9 +104,9 @@ exports.updateWeek = async (req, res) => {
     // On vérifie s'il y a eu des modification d'emploi du temps
     let listOfModifiedDays = db.managePlanning.getListOfModifiedDays(weekToUpdate, requestedWeek);
 
-    // S'il y a modification on envoie une notification à l'utilisateur
-    // TODO : rajouter une condition pour ne pas envoyer de notif si demande d'update manuelle
-    if (listOfModifiedDays.length > 0) {
+    // S'il y a modification et que mise à jour automatique
+    // on envoie une notification à l'utilisateur
+    if (listOfModifiedDays.length > 0 && req.body.hasOwnProperty('isAutomaticUpdate')) {
         // Génération contenu de la notif
         let notifTitle = `Modifications Planning détectées : ${listOfModifiedDays[0]}`;
         let notifContent = ``;
@@ -118,8 +118,6 @@ exports.updateWeek = async (req, res) => {
         }
         // Envoi de la notif
         notify(aurionID, notifTitle, notifContent);
-        // envoi de la réponse au client
-        return res.status(sCode.created).send(JSON.stringify(requestedWeek));
     }
     else {
         console.log(`updateWeek --> Pas de modifications de planning dans la semaine du ${date}`);
