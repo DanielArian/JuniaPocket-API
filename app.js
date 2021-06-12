@@ -44,7 +44,7 @@ setInterval(async function () {
         headers: { Authorization: `Bearer ${token}` }
     };
 
-    let r2 = await axios.post(`http://localhost:${port}/marks/update`, {isAutomaticUpdate: ''}, config)
+    let r2 = await axios.post(`http://localhost:${port}/marks/update`, { isA utomaticUpdate: '' }, config)
         .then(function (response) {
             // Affiche la réponse
             // console.log(response.data);
@@ -63,23 +63,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Set CORS
-var allowedDomains = ['https://juniapocket.vercel.app', 'http://localhost:3000'];
+var allowedDomains = [
+    'https://juniapocket.vercel.app',
+    'juchnia-pierre2.vercel.app',
+    'http://localhost:3000'
+];
 app.use(cors({
-  origin: function (origin, callback) {
-    // bypass the requests with no origin (like curl requests, mobile apps, etc )
-    if (!origin) return callback(null, true);
- 
-    if (allowedDomains.indexOf(origin) === -1) {
-      var msg = `This site ${origin} does not have an access. Only specific domains are allowed to access it.`;
-      return callback(new Error(msg), false);
+    origin: function (origin, callback) {
+        // bypass the requests with no origin (like curl requests, mobile apps, etc )
+        if (!origin) return callback(null, true);
+
+        if (allowedDomains.indexOf(origin) === -1) {
+            var msg = `This site ${origin} does not have an access. Only specific domains are allowed to access it.`;
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
     }
-    return callback(null, true);
-  }
 }));
 
 
 app.use(mw.logRequest);
 app.use('/', routes.homepage);
+app.get('/isTokenValid', mw.auth);
 app.use('/user', routes.user);
 
 // L'accès aux chemins ci-dessous nécessite une authentification
