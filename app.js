@@ -6,6 +6,8 @@ const routes = require('./Routes/index');
 const mw = require('./Middlewares/index');
 const axios = require('axios');
 
+const isTokenValidCtrl = require('./Controllers/isTokenValid');
+
 const dbUsername = process.env.DB_USERNAME || config.dbUsername;
 const dbPassword = process.env.DB_PASSWORD || config.dbPassword;
 const port = process.env.PORT || 5000;
@@ -84,7 +86,7 @@ app.use(cors({
 
 app.use(mw.logRequest);
 app.use('/', routes.homepage);
-app.get('/isTokenValid', mw.auth);
+app.get('/isTokenValid', isTokenValidCtrl);
 app.use('/user', routes.user);
 
 // L'accès aux chemins ci-dessous nécessite une authentification
