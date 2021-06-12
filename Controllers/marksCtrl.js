@@ -106,9 +106,8 @@ exports.updateMarks = async (req, res) => {
     let listOfNewMarks = db.manageMark.getListOfNewMarks(oldMarksDoc.marks, updatedMarksOfUser);
     let nbOfNewMarks = listOfNewMarks.length;
 
-    // Envoi notification si au moins une nouvelle note
-    // TODO rajouter une condition dans le if pour ne pas notif si update manuelle
-    if (nbOfNewMarks > 0) {
+    // Envoi notification si au moins une nouvelle note et si update automatique
+    if (nbOfNewMarks > 0 && req.body.hasOwnProperty('isAutomaticUpdate')) {
         // On génère le contenu de la notif
         let notifTitle = 'Nouvelle note !\n\n';
         if (nbOfNewMarks > 1) notifTitle = 'Nouvelles notes !\n';
