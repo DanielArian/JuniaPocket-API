@@ -67,7 +67,7 @@ app.use(express.urlencoded({ extended: true }));
 // Set CORS
 var allowedDomains = [
     'https://juniapocket.vercel.app',
-    'juchnia-pierre2.vercel.app',
+    'https://juchnia-pierre2.vercel.app',
     'http://localhost:3000'
 ];
 app.use(cors({
