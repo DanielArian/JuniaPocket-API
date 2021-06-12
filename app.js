@@ -44,7 +44,7 @@ setInterval(async function () {
         headers: { Authorization: `Bearer ${token}` }
     };
 
-    let r2 = await axios.post(`http://localhost:${port}/marks/update`, { isA utomaticUpdate: '' }, config)
+    let r2 = await axios.post(`http://localhost:${port}/marks/update`, { isAutomaticUpdate: '' }, config)
         .then(function (response) {
             // Affiche la réponse
             // console.log(response.data);
