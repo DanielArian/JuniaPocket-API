@@ -54,7 +54,7 @@ setInterval(async function () {
             console.log(error);
         })
 
-}, 10 * 1000);
+}, 10 * 60 * 1000);
 
 
 // Launch and config server
