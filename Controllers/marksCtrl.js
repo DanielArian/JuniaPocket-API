@@ -101,27 +101,27 @@ exports.updateMarks = async (req, res) => {
         return res.status(sCode.serverError).json({ error });
     }
 
-    // On vérifie s'il y a au moins une nouvelle note
-    let oldMarksDoc = await db.search.findUserByAurionIDInCollection(aurionID, db.Models.Mark);
-    let listOfNewMarks = db.manageMark.getListOfNewMarks(oldMarksDoc.marks, updatedMarksOfUser);
-    let nbOfNewMarks = listOfNewMarks.length;
+    // // On vérifie s'il y a au moins une nouvelle note
+    // let oldMarksDoc = await db.search.findUserByAurionIDInCollection(aurionID, db.Models.Mark);
+    // let listOfNewMarks = db.manageMark.getListOfNewMarks(oldMarksDoc.marks, updatedMarksOfUser);
+    // let nbOfNewMarks = listOfNewMarks.length;
 
-    // Envoi notification si au moins une nouvelle note et si update automatique
-    if (nbOfNewMarks > 0 && req.body.hasOwnProperty('isAutomaticUpdate')) {
-        // On génère le contenu de la notif
-        let notifTitle = 'Nouvelle note !\n\n';
-        if (nbOfNewMarks > 1) notifTitle = 'Nouvelles notes !\n';
-        let notifContent = '';
-        for (mark of listOfNewMarks) {
-            let keys = Object.keys(mark);
-            for (k of keys) {
-                notifContent += k + ': ' + mark[k] + '\n'
-            }
-            notifContent += '\n';
-        }
-        // envoi
-        notify(aurionID, notifTitle, notifContent);
-    }
+    // // Envoi notification si au moins une nouvelle note et si update automatique
+    // if (nbOfNewMarks > 0 && req.body.hasOwnProperty('isAutomaticUpdate')) {
+    //     // On génère le contenu de la notif
+    //     let notifTitle = 'Nouvelle note !\n\n';
+    //     if (nbOfNewMarks > 1) notifTitle = 'Nouvelles notes !\n';
+    //     let notifContent = '';
+    //     for (mark of listOfNewMarks) {
+    //         let keys = Object.keys(mark);
+    //         for (k of keys) {
+    //             notifContent += k + ': ' + mark[k] + '\n'
+    //         }
+    //         notifContent += '\n';
+    //     }
+    //     // envoi
+    //     notify(aurionID, notifTitle, notifContent);
+    // }
 
     // On met a jour la database
     // On pourrait sauter cette étape en utilisant la condition (nbOfNewMarks == 0)

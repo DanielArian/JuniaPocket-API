@@ -1,10 +1,8 @@
-const config = require('../Config/index');
 const sCode = require('../httpStatus');
 
 const db = require('../Database/index');
 const aurionScrapper = require('../AurionScrapperCore/index');
 const { getAurionPassword } = require('../Database/manageUser');
-const lodash = require('lodash');
 const notify = require('../notify');
 
 
@@ -36,7 +34,6 @@ exports.getPlanningOfWeek = async (req, res) => {
     let requestedWeek;
     try {
         let aurionPassword = await getAurionPassword(aurionID);
-        console.log(`Connexion de ${aurionID} à Aurion...`);
         let planningPage = await aurionScrapper.fetch.planning(aurionID, aurionPassword, date);
         if (planningPage == 'Username ou mot de passe invalide.') {
             return res.status(sCode.unauthorized).json({error: 'Les identifiants aurion ne sont plus valides.'})
@@ -89,7 +86,6 @@ exports.updateWeek = async (req, res) => {
     let requestedWeek;
     try {
         let aurionPassword = await getAurionPassword(aurionID);
-        console.log(`Connexion de ${aurionID} à Aurion...`);
         let planningPage = await aurionScrapper.fetch.planning(aurionID, aurionPassword, date);
         if (planningPage == 'Username ou mot de passe invalide.') {
             return res.status(sCode.unauthorized).json({error: 'Les identifiants aurion ne sont plus valides.'})

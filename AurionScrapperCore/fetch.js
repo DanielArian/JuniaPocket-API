@@ -11,6 +11,7 @@ async function check_if_logged_in(page) {
 
 
 async function connection(page, username, password) {
+    console.log(`Connexion à Aurion de ${username}...`);
     try{
         await page.goto(login_url);
     }
@@ -34,7 +35,7 @@ async function connection(page, username, password) {
         console.log("Username ou mot de passe invalide.");
         return false;
     }
-    console.log("Connexion reussie.");
+    console.log(`Connexion reussie de ${username}.`);
     return true;
 }
 

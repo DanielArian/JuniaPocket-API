@@ -4,7 +4,7 @@ var cors = require('cors');
 const config = require('./Config/index');
 const routes = require('./Routes/index');
 const mw = require('./Middlewares/index');
-const axios = require('axios');
+const automaticActions = require('./automaticActions');
 
 const isTokenValidCtrl = require('./Controllers/isTokenValid');
 
@@ -18,45 +18,8 @@ const URI = `mongodb+srv://${dbUsername}:${dbPassword}@juniapocket.1vwtr.mongodb
 dbConnection.connectToMongoDB(URI);
 
 
-// Check des notes automatique pour p64002
-// Expérimental
-setInterval(async function () {
-
-    var dataToSend = {
-        "aurionID": 'p64002',
-        "jpocketPassword": 'daniel'
-    };
-
-    let r = await axios.post(`http://localhost:${port}/user/login`, dataToSend)
-        .then(function (response) {
-            // Affiche la réponse
-            // console.log(response.data);
-            return response;
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-    let token;
-    if (r.status == 200) {
-        token = r.data.token;
-    }
-    // console.log('token :' , token);
-
-    const config = {
-        headers: { Authorization: `Bearer ${token}` }
-    };
-
-    let r2 = await axios.post(`http://localhost:${port}/marks/update`, { isAutomaticUpdate: '' }, config)
-        .then(function (response) {
-            // Affiche la réponse
-            // console.log(response.data);
-            return response;
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-
-}, 10 * 60 * 1000);
+// Update automatique des notes toutes les 15 min, notif si moditification
+setInterval(automaticActions.updateMarks , 15 * 60 * 1000);
 
 
 // Launch and config server
