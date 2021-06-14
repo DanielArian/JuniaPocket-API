@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const db = require('./index');
 const PlanningModel = require('./Models/planning');
-const lodash =  require('lodash');
+const lodash = require('lodash');
 
 
 function convertDateStringToUTCDate(date) {
@@ -46,12 +46,11 @@ function createPlanningDocument(aurionID, planningResponse) {
 function updateWeek(aurionID, date, updatedWeek) {
     /**
      * @param {String} date - jj/mm/aaaa
-     * @return {Bool} true s'il y a au moins une modification
-     *                false sinon (ou s'il y a eu des erreurs)
      */
 
     // On recherche la date du lundi de la semaine de la date donnée car on va
     // effectuer une recherche dans la bdd en fonction de la key beginDate
+
     let utcDate = convertDateStringToUTCDate(date);
     while (utcDate.getDay() != 1) { // On se ramène à un lundi (1), sachant que 
         utcDate.setDate(utcDate.getDate() - 1);
@@ -79,7 +78,6 @@ function updateWeek(aurionID, date, updatedWeek) {
             });
     } catch (error) {
         console.log(error);
-        return false;
     }
 }
 
@@ -133,14 +131,32 @@ async function getWeeks(studentAurionID) {
 }
 
 
+async function addWeekToPlanningDoc(aurionID, weekToAdd) {
+
+    let userPlanningDoc = await getUserPlanningDoc(aurionID);
+    if (userPlanningDoc != 'ERROR' || userPlanningDoc != null) {
+        userPlanningDoc.weeks.push(weekToAdd);
+        userPlanningDoc.weeks.sort(function (a, b) {
+            return (new Date(b.beginDate) - new Date(a.beginDate));
+        });
+        db.save.saveDoc(userPlanningDoc);
+        return true;
+    }
+    else return false;
+}
+
+
 async function findWeekPlanningFromDate(aurionID, date) {
     /**
-     * Recherche parmi les semaines enregistrés dans la database
+     * Recherche dans la database parmi les semaines enregistrés d'un user 
      * celle qui contient la date donnée en argument (au format 'jj/mm/yyyy').
      * 
      * Renvoie l'Object de l'array 'weeks' qui contient cette date
      * Si cette date n'est présente dans aucune semaine sauvegardée,
      * renvoie null.
+     * 
+     * Si l'argument date est une chaine vide, on considère que la date
+     * est la date du jour.
      */
 
     let utcDateObject = convertDateStringToUTCDate(date);
@@ -171,26 +187,11 @@ async function findWeekPlanningFromDate(aurionID, date) {
 }
 
 
-async function addWeekToPlanningDoc(aurionID, weekToAdd) {
-
-    let userPlanningDoc = await getUserPlanningDoc(aurionID);
-    if (userPlanningDoc != 'ERROR' || userPlanningDoc != null) {
-        userPlanningDoc.weeks.push(weekToAdd);
-        userPlanningDoc.weeks.sort(function (a, b) {
-            return (new Date(b.beginDate) - new Date(a.beginDate));
-        });
-        db.save.saveDoc(userPlanningDoc);
-        return true;
-    }
-    else return false;
-}
-
-
 function getListOfModifiedDays(oldWeek, updatedWeek) {
     /**
      * @param {Array} oldWeek - week stockée dans la BDD
      * @param {Array} updatedWeek - week récupérée et formatée par aurion Scrapper
-     * @return {Array} Liste vide si pas de changement, sinon liste des date dans la semaine
+     * @return {Array} Liste vide si pas de changement, sinon liste des date dans la semaine où il y a un chgmt
      */
 
     console.log('OLD: ', oldWeek);
@@ -212,7 +213,7 @@ module.exports = {
     createPlanningDocument,
     updateWeek,
     getWeeks,
-    findWeekPlanningFromDate,
     addWeekToPlanningDoc,
+    findWeekPlanningFromDate,
     getListOfModifiedDays
 }

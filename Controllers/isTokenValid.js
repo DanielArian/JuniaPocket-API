@@ -8,6 +8,7 @@
  const sCode = require('../httpStatus');
  
  module.exports = async (req, res) => {
+     // Teste l'authentification
      // Nécessite d'envoyer le Bearer Token dans le headers authorization
  
      try {
@@ -20,7 +21,7 @@
          console.log('req.user = ', req.user);
          res.status(sCode.OK).json({isValid: true, user: req.user.aurionID});
      } catch (error) {
-         console.log(`auth --> ${error}`);
+         console.log(`isTokenValid --> ${error}`);
          res.status(sCode.badRequest).json({isValid: false, error: 'Token invalide !'});
      };
  };

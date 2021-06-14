@@ -14,13 +14,15 @@ const port = process.env.PORT || 5000;
 
 // Connection à Mongo DataBase
 const dbConnection = require('./databaseConnection');
+const { managePlanning } = require('./Database');
 const URI = `mongodb+srv://${dbUsername}:${dbPassword}@juniapocket.1vwtr.mongodb.net/data?retryWrites=true&w=majority`
 dbConnection.connectToMongoDB(URI);
 
 
 // Update automatique des notes toutes les 15 min, notif si moditification
+setInterval(automaticActions.keepHerokuAlive(), 30 * 60 * 1000);
 setInterval(automaticActions.updateMarks , 15 * 60 * 1000);
-
+setInterval(automaticActions.notifyNextCourse , 15 * 60 * 1000);
 
 // Launch and config server
 var app = express();
