@@ -19,7 +19,7 @@ const URI = `mongodb+srv://${dbUsername}:${dbPassword}@juniapocket.1vwtr.mongodb
 dbConnection.connectToMongoDB(URI);
 
 
-// Update automatique des notes toutes les 15 min, notif si moditification
+// Actions automatiques
 setInterval(automaticActions.keepHerokuAlive, 30 * 60 * 1000);
 setInterval(automaticActions.updateMarks , 15 * 60 * 1000);
 setInterval(automaticActions.notifyNextCourse , 15 * 60 * 1000);

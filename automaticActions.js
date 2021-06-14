@@ -134,9 +134,17 @@ async function notifyNextCourse() {
      * 
      */
 
+    console.log('## CHECK NOTIF PROCHAIN COURS ##');
+    
     // Si on est un dimanche, on ne fait rien.
     let day = new Date().getDay()
     if (day == 0) {
+        return true;
+    }
+
+    // Si on est entre 22h et 7h on ne fait rien
+    let hour = new Date().getHours()
+    if (hour > 22 && hour < 7) {
         return true;
     }
 

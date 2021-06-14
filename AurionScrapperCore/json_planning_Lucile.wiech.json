@@ -1,0 +1,159 @@
+{
+    "weekNumber": "11",
+    "year": "2021",
+    "beginDate": "Mon, 15 Mar 2021",
+    "lastUpdate": "2021-06-14T22:58:47.000Z",
+    "days": {
+        "Mon, 15 Mar 2021 00:00:00 GMT": [
+            {
+                "date": "Mon, 15 Mar 2021 00:00:00 GMT",
+                "room": "Horaire tiers temps : 8h00-12h00 - ",
+                "eventName": "Economie appliquée au secteur agro-alimentaire",
+                "startTime": "09:00",
+                "endTime": "12:00",
+                "teacher": "Monsieur COMONT",
+                "other": ",20RT de SALLE Thomas à ZWERTVAEGHER Lucas /,HEI salle S113 de EICHERT Laura à RYCHLAK Thibaut /,HEI salle S102 de ADELINE Juliette à DUWR Louis /,,EXAMEN Economie appliquée à l'agroalimentaire (PRESENTIEL) /",
+                "isAnExam": false
+            },
+            {
+                "date": "Mon, 15 Mar 2021 00:00:00 GMT",
+                "room": "Evaluation environnementale et éco-conception (EN DISTANCIEL) - ",
+                "eventName": "Evaluation environnementale et éco-conception",
+                "startTime": "13:30",
+                "endTime": "15:35",
+                "teacher": "Madame COMBELLES",
+                "other": "",
+                "isAnExam": false
+            },
+            {
+                "date": "Mon, 15 Mar 2021 00:00:00 GMT",
+                "room": "de BAHU à HENNINOT : 16h55-17h55 - ISA Salle NS 396",
+                "eventName": "LV2 Espagnol",
+                "startTime": "15:50",
+                "endTime": "17:55",
+                "teacher": "Monsieur RUBALCAVA",
+                "other": "de LABADIE à WIECH : 15h50-16h50,LV2 Espagnol",
+                "isAnExam": false
+            }
+        ],
+        "Tue, 16 Mar 2021 00:00:00 GMT": [
+            {
+                "date": "Tue, 16 Mar 2021 00:00:00 GMT",
+                "room": "Rappel choix des UE de 4ième année avant choix définitif par Sophie Dupont Wargniez (EN DISTANCIEL sur Teams ING56) - ",
+                "eventName": "",
+                "startTime": "08:00",
+                "endTime": "10:05",
+                "teacher": "Madame DESCAMPS",
+                "other": "",
+                "isAnExam": false
+            },
+            {
+                "date": "Tue, 16 Mar 2021 00:00:00 GMT",
+                "room": "Présentation de la Filière Sucre (EN DISTANCIEL sur le canal Général du TEAMS \"ISA3 filières\") - ",
+                "eventName": "",
+                "startTime": "13:30",
+                "endTime": "15:35",
+                "teacher": "Madame VANDERMEERSCH",
+                "other": "",
+                "isAnExam": false
+            },
+            {
+                "date": "Tue, 16 Mar 2021 00:00:00 GMT",
+                "room": "Présentation de la Filière Pomme de terre (EN DISTANCIEL sur le canal \"filière pomme de terre\" du groupe Teams \"ISA3 Filière\") - ",
+                "eventName": "",
+                "startTime": "15:50",
+                "endTime": "17:55",
+                "teacher": "Monsieur DESCAMPS",
+                "other": "",
+                "isAnExam": false
+            }
+        ],
+        "Wed, 17 Mar 2021 00:00:00 GMT": [
+            {
+                "date": "Wed, 17 Mar 2021 00:00:00 GMT",
+                "room": "GDD Projet autogéré - ",
+                "eventName": "Projet gestion de données",
+                "startTime": "08:00",
+                "endTime": "10:05",
+                "teacher": " ",
+                "other": "",
+                "isAnExam": false
+            },
+            {
+                "date": "Wed, 17 Mar 2021 00:00:00 GMT",
+                "room": "EN PRESENTIEL - ISA Amphi 002",
+                "eventName": "Evaluation environnementale et éco-conception",
+                "startTime": "10:20",
+                "endTime": "12:25",
+                "teacher": "Monsieur BUTEL",
+                "other": "",
+                "isAnExam": false
+            }
+        ],
+        "Thu, 18 Mar 2021 00:00:00 GMT": [
+            {
+                "date": "Thu, 18 Mar 2021 00:00:00 GMT",
+                "room": "123 = distanciel - ISA Amphi 002",
+                "eventName": "Evaluation environnementale et éco-conception",
+                "startTime": "08:00",
+                "endTime": "10:05",
+                "teacher": "Monsieur BUTEL",
+                "other": "4567 = présentiel ,HYBRIDE",
+                "isAnExam": false
+            },
+            {
+                "date": "Thu, 18 Mar 2021 00:00:00 GMT",
+                "room": "Préparation TOEFL (EN PRESENTIEL) - ISA Salle 221",
+                "eventName": "",
+                "startTime": "13:30",
+                "endTime": "15:35",
+                "teacher": "Madame MILSOM",
+                "other": "",
+                "isAnExam": false
+            },
+            {
+                "date": "Thu, 18 Mar 2021 00:00:00 GMT",
+                "room": "M Lachever disponible pour entretien individuel pour qui veut sur Teams. Pas de RDV nécessaire et pour tout type de sujet. Vous appelez sur ce créneau. Si je suis déjà pris, je vous rappelle ensuite. - ",
+                "eventName": "",
+                "startTime": "17:00",
+                "endTime": "18:00",
+                "teacher": "Monsieur LACHEVER",
+                "other": "",
+                "isAnExam": false
+            }
+        ],
+        "Fri, 19 Mar 2021 00:00:00 GMT": [
+            {
+                "date": "Fri, 19 Mar 2021 00:00:00 GMT",
+                "room": "Présentation de la Filière Lait (EN DISTANCIEL sur le canal Général du TEAMS \"ISA3 filières\") - ",
+                "eventName": "",
+                "startTime": "08:00",
+                "endTime": "10:05",
+                "teacher": "Madame JACQUERIE",
+                "other": "",
+                "isAnExam": false
+            },
+            {
+                "date": "Fri, 19 Mar 2021 00:00:00 GMT",
+                "room": "Présentation de la Filière Bois (EN DISTANCIEL sur le canal Général du TEAMS \"ISA3 filières\") - ",
+                "eventName": "",
+                "startTime": "10:20",
+                "endTime": "12:25",
+                "teacher": "Monsieur DELBENDE",
+                "other": "",
+                "isAnExam": false
+            },
+            {
+                "date": "Fri, 19 Mar 2021 00:00:00 GMT",
+                "room": "AUTOGERE ! - ",
+                "eventName": "Evaluation environnementale et éco-conception",
+                "startTime": "13:30",
+                "endTime": "15:35",
+                "teacher": "Madame COMBELLES",
+                "other": "",
+                "isAnExam": false
+            }
+        ],
+        "Sat, 20 Mar 2021 00:00:00 GMT": []
+    }
+}
