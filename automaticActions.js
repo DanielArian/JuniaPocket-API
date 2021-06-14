@@ -177,8 +177,6 @@ async function notifyNextCourse() {
                 let dateNow = getUTCDateNow();
                 let diff = getMinutesBetweenDates(dateNow, beginDate)
 
-                console.log('diff', diff / 60);
-
                 // Si l'event n'est pas passé et qu'il se produit dans moins de 20 min
 
                 if (diff > 0 && diff <= 20) {
