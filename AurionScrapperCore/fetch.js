@@ -18,7 +18,7 @@ async function connection(page, username, password) {
         await page.goto(login_url);
     }
     catch (err) {
-        console.log(err)
+        console.log(err);
         return false;
     }
     await page.type('#username', username);
@@ -52,21 +52,27 @@ async function checkAurionIDAndGetNameIfOk(username, password) {
             '--disable-setuid-sandbox'
         ]
     });
-    const page = await browser.newPage();
-    await page.setExtraHTTPHeaders({
-        'Accept-Language': 'fr'
-    });
-    await page.setViewport({
-        width: 1920,
-        height: 1080,
-        deviceScaleFactor: 1
-    });
+    try {
+        const page = await browser.newPage();
+        await page.setExtraHTTPHeaders({
+            'Accept-Language': 'fr'
+        });
+        await page.setViewport({
+            width: 1920,
+            height: 1080,
+            deviceScaleFactor: 1
+        });
 
-    // Connection
-    if (await connection(page, username, password) == false) {
-        return 'INVALID'
+        // Connection
+        if (await connection(page, username, password) == false) {
+            return 'INVALID'
+        }
+        const studentName = page.$eval('li.ui-widget-header', el => el.textContent);
+    } catch (error) {
+        console.log(`checkAurionIDAndGetNameIfOk --> ${error}`);
+    } finally {
+        await browser.close();
     }
-    const studentName = page.$eval('li.ui-widget-header', el => el.textContent);
     return studentName;
 }
 
@@ -78,46 +84,54 @@ async function marks(username, password) {
             '--disable-setuid-sandbox'
         ]
     });
-    const page = await browser.newPage();
-    await page.setExtraHTTPHeaders({
-        'Accept-Language': 'fr'
-    });
-    await page.setViewport({
-        width: 1920,
-        height: 1080,
-        deviceScaleFactor: 1
-    });
+    let pageContent;
+    try {
+        const page = await browser.newPage();
+        await page.setExtraHTTPHeaders({
+            'Accept-Language': 'fr'
+        });
+        await page.setViewport({
+            width: 1920,
+            height: 1080,
+            deviceScaleFactor: 1
+        });
 
-    // Connection
-    if (await connection(page, username, password) == false) {
-        return 'Username ou mot de passe invalide.'
+        // Connection
+        if (await connection(page, username, password) == false) {
+            await browser.close();
+            pageContent = 'Username ou mot de passe invalide.'
+        }
+
+        // Click on button Scolarité
+        const myScheduleBtn = await page.$x("//*[contains(text(), 'Scolarité')]");
+        if (myScheduleBtn.length > 0) {
+            await myScheduleBtn[0].click();
+        } else {
+            throw new Error("Scolarité button not found");
+        }
+        await page.waitForXPath("//*[contains(text(), 'Mes notes')]");
+
+        // Click on button Mes notes
+        // Récupération array des buttons contenant la chaine "Mes notes"
+        const myGradesBtn = await page.$x("//*[contains(text(), 'Mes notes')][@class='ui-menuitem-text']");
+        // Recherche du bon bouton (Il y a parfois un bouton "Mes notes suite aux absences" par ex)
+        let btnNumber = 0;
+        while (await page.evaluate(el => el.textContent, myGradesBtn[btnNumber]) != 'Mes notes') {
+            btnNumber++;
+        };
+        await myGradesBtn[btnNumber].click();
+        await page.waitForNavigation();
+
+        // Respond with the page content
+        pageContent = await page.content();
+        
+        console.log("Notes recuperees avec succes !");
+        
+    } catch (error) {
+        console.log(`fetch.marks error --> ${error}`);
+    } finally {
+        await browser.close();
     }
-
-    // Click on button Scolarité
-    const myScheduleBtn = await page.$x("//*[contains(text(), 'Scolarité')]");
-    if (myScheduleBtn.length > 0) {
-        await myScheduleBtn[0].click();
-    } else {
-        throw new Error("Scolarité button not found");
-    }
-    await page.waitForXPath("//*[contains(text(), 'Mes notes')]");
-
-    // Click on button Mes notes
-    // Récupération array des buttons contenant la chaine "Mes notes"
-    const myGradesBtn = await page.$x("//*[contains(text(), 'Mes notes')][@class='ui-menuitem-text']");
-    // Recherche du bon bouton (Il y a parfois un bouton "Mes notes suite aux absences" par ex)
-    let btnNumber = 0;
-    while (await page.evaluate(el => el.textContent, myGradesBtn[btnNumber]) != 'Mes notes') {
-        btnNumber++;
-    };
-    await myGradesBtn[btnNumber].click();
-    await page.waitForNavigation();
-
-    // Respond with the page content
-    pageContent = await page.content();
-    await browser.close();
-
-    console.log("Notes recuperees avec succes !")
     return pageContent;
 };
 
@@ -134,57 +148,64 @@ async function planning(username, password, date) {
             '--disable-setuid-sandbox'
         ]
     });
-    const page = await browser.newPage();
-    const pendingXhr = new PendingXHR(page);
-    await page.setExtraHTTPHeaders({
-        'Accept-Language': 'fr'
-    });
-    await page.setViewport({
-        width: 1920,
-        height: 1080,
-        deviceScaleFactor: 1
-    });
+    let pageContent;
+    try {
+        const page = await browser.newPage();
+        const pendingXhr = new PendingXHR(page);
+        await page.setExtraHTTPHeaders({
+            'Accept-Language': 'fr'
+        });
+        await page.setViewport({
+            width: 1920,
+            height: 1080,
+            deviceScaleFactor: 1
+        });
 
-    
-    // Connection
-    if (await connection(page, username, password) == false) {
-        return 'Username ou mot de passe invalide.'
-    }
+        
+        // Connection
+        if (await connection(page, username, password) == false) {
+            await browser.close();
+            return 'Username ou mot de passe invalide.'
+        }
 
-    // Click on Mon Planning
-    const myScheduleBtn = await page.$x("//*[contains(text(), 'Mon Planning')]");
-    if (myScheduleBtn.length > 0) {
-        await myScheduleBtn[0].click();
-    } else {
-        throw new Error("My Schedule button not found");
-    }
-    // Wait for xml content to be loaded
-    await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
-    await pendingXhr.waitForAllXhrFinished();
-
-    if (date != "") {
-        champ = await page.$x('//*[@id="form:date_input"]');
-        await champ[0].click({ clickCount: 3 });
-        await page.keyboard.press('Backspace');
-
-        await champ[0].type(date);
-        await page.keyboard.press('Enter');
-
-        await page.waitForTimeout(1000);
-
-        buttonSearch = await page.$x('/html/body/div[1]/form/div[2]/div[2]/div/div[2]/div/div/div[2]/button/span[1]');
-        await buttonSearch[0].click();
-
+        // Click on Mon Planning
+        const myScheduleBtn = await page.$x("//*[contains(text(), 'Mon Planning')]");
+        if (myScheduleBtn.length > 0) {
+            await myScheduleBtn[0].click();
+        } else {
+            throw new Error("My Schedule button not found");
+        }
         // Wait for xml content to be loaded
         await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
         await pendingXhr.waitForAllXhrFinished();
+
+        if (date != "") {
+            champ = await page.$x('//*[@id="form:date_input"]');
+            await champ[0].click({ clickCount: 3 });
+            await page.keyboard.press('Backspace');
+
+            await champ[0].type(date);
+            await page.keyboard.press('Enter');
+
+            await page.waitForTimeout(1000);
+
+            buttonSearch = await page.$x('/html/body/div[1]/form/div[2]/div[2]/div/div[2]/div/div/div[2]/button/span[1]');
+            await buttonSearch[0].click();
+
+            // Wait for xml content to be loaded
+            await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+            await pendingXhr.waitForAllXhrFinished();
+        }
+
+        // Respond with the page content
+        pageContent = await page.content()
+        console.log("Planning recupere avec succes !");
+
+    } catch (error) {
+        console.log(`fetch.planning error --> ${error}`);
+    } finally {
+        await browser.close();
     }
-
-    // Respond with the page content
-    pageContent = await page.content()
-    await browser.close();
-
-    console.log("Planning recupere avec succes !");
     return pageContent;
 };
 

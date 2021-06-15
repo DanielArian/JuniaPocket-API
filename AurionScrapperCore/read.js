@@ -1,5 +1,9 @@
 // Requiring the module
 const reader = require('xlsx')
+// const json = require('./json_planning_p64002')
+// const json = require('./json_planning_Lucile.wiech')
+const json = require('./json_planning_h19190')
+
 
 // Reading our test file
 const file = reader.readFile('../salles.xlsx')
@@ -16,12 +20,14 @@ for (let i = 0; i < sheets.length; i++) {
     })
 }
 
+for (k of Object.keys(json.days)) {
 
-const fs = require('fs')
+  for (elem of json.days[k]) {
 
-try {
-  const data = fs.readFileSync('/Users/joe/test.txt', 'utf8')
-  console.log(data)
-} catch (err) {
-  console.error(err)
+    let room = elem.room;
+    for (l of data) {
+      if (room.includes(l.Label)) console.log(`${room} --> ${l.Label}`);
+    }
+  }
 }
+
