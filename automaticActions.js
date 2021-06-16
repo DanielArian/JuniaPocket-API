@@ -4,6 +4,7 @@ const aurionScrapper = require('./AurionScrapperCore/index');
 const axios = require('axios');
 const mongoose = require('mongoose');
 const { UnavailableRoom } = require('./Database/Models');
+const { forEach } = require('lodash');
 
 function getUTCDateNow(date) {
     /**
@@ -150,13 +151,13 @@ async function updateUnavailableRooms() {
 
             for (day of Object.keys(Week.days)) {
 
-                for (elem of Week.days[day]) {
+                for (evenement of Week.days[day]) {
 
-                    // console.log(elem);
+                    console.log(evenement);
 
                     for (roomDoc of listOfRoomDoc) {
 
-                        if (elem.room.includes(roomDoc.label)) {
+                        if (evenement.room.includes(roomDoc.label)) {
 
                             console.log(`${planningDoc.aurionID} / ${day} :  ${roomDoc.label}`);
 
@@ -164,14 +165,14 @@ async function updateUnavailableRooms() {
 
                             try {
                                 let UnavailableRoomDoc = await db.Models.UnavailableRoom.findOne({ date: day });
-                                // console.log('DATA :', data)
+                                console.log('UNAVAI DOC :', UnavailableRoomDoc);
 
                                 // Si non existante
 
                                 if (!UnavailableRoomDoc) {
                                     // No data found / On créée et sauvegarde la date
                                     var label = roomDoc.label;
-                                    let [startTime, endTime] = [elem.startTime, elem.endTime];
+                                    let [startTime, endTime] = [evenement.startTime, evenement.endTime];
                                     let obj = {};
                                     obj[label] = [[startTime, endTime]];
                                     const doc = db.Models.UnavailableRoom({
@@ -182,16 +183,54 @@ async function updateUnavailableRooms() {
 
                                     // sauvegarde mais empeche de passer à la suite tant que non fini
                                     // https://stackoverflow.com/questions/27447478/force-mongoose-save-callback-to-wait-for-write-to-complete
-                                    await doc.save().then(function (savedPost) {
-                                        self.decorate('doc', savedPost.service, savedPost.id);
-                                    });
+                                    await doc.save().then(console.log('first save!'));
 
                                     break;
                                 }
+                                // Si date existante dans la collection Unavailable Rooms
                                 else {
-                                    // Si date existante dans la collection Unavailable Rooms
 
-                                    // UnavailableRoomDoc = await db.Models.UnavailableRoom.findOne({ "date": day, rooms.code: roomDoc.code });
+                                    // On verif si la salle est déjà existante ou non
+                                    let isRoomAlreadyThere = Object.keys(UnavailableRoomDoc.rooms).includes(roomDoc.label);
+                                    console.log('isRoomAlreadyThere:', isRoomAlreadyThere)
+
+                                    if (isRoomAlreadyThere) {
+
+                                        // On vérifie si le(s) créneau(x) renseingné(s) pour cette salle ne sont pas déjà inscrits comme non dispo
+                                        // On compare les heures de début uniquement (en supposant que les conflits ont déjà été traités par Aurion)
+
+                                        let isNew = true;
+                                        UnavailableRoomDoc.rooms[roomDoc.label].forEach((slot) => {
+
+                                            console.log('Already taken slot :', slot);
+                                            if (slot[0] == evenement.startTime) {
+                                                isNew = false;
+                                            }
+                                        });
+                                        console.log('isNew :', isNew);
+
+                                        // Si nouveau créneau, on l'ajoute et on save
+                                        if (isNew) {
+                                            let Slot = [evenement.startTime, evenement.endTime]
+                                            UnavailableRoomDoc.rooms[roomDoc.label].push(Slot);
+                                            UnavailableRoomDoc.rooms[roomDoc.label].sort((a, b) => {
+                                                let strStartTimeA = a[0].split(':')[0] + a[0].split(':')[1];
+                                                let strStartTimeB = b[0].split(':')[0] + b[0].split(':')[1];
+                                                return Number(strStartTimeA) - Number(strStartTimeB);
+                                            })
+                                            // sauvegarde mais empeche de passer à la suite tant que non fini
+                                            // https://stackoverflow.com/questions/27447478/force-mongoose-save-callback-to-wait-for-write-to-complete
+
+                                            
+                                            var pushObj = {};
+                                            pushObj['rooms.' + label] = [evenement.startTime, evenement.endTime];
+                                            db.Models.UnavailableRoom.updateOne({ date: day }, { $push: pushObj }).then(console.log('updated!'));
+                                            break;
+                                        }
+                                    }
+                                    else {
+
+                                    }
 
 
                                 }

@@ -68,7 +68,7 @@ async function checkAurionIDAndGetNameIfOk(username, password) {
         if (await connection(page, username, password) == false) {
             return 'INVALID'
         }
-        studentName = page.$eval('li.ui-widget-header', el => el.textContent);
+        studentName = await page.$eval('li.ui-widget-header', el => el.textContent);
     } catch (error) {
         console.log(`checkAurionIDAndGetNameIfOk --> ${error}`);
     } finally {
