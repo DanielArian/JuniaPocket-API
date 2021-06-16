@@ -52,6 +52,7 @@ async function checkAurionIDAndGetNameIfOk(username, password) {
             '--disable-setuid-sandbox'
         ]
     });
+    let studentName;
     try {
         const page = await browser.newPage();
         await page.setExtraHTTPHeaders({
@@ -67,7 +68,7 @@ async function checkAurionIDAndGetNameIfOk(username, password) {
         if (await connection(page, username, password) == false) {
             return 'INVALID'
         }
-        const studentName = page.$eval('li.ui-widget-header', el => el.textContent);
+        studentName = page.$eval('li.ui-widget-header', el => el.textContent);
     } catch (error) {
         console.log(`checkAurionIDAndGetNameIfOk --> ${error}`);
     } finally {

@@ -2,7 +2,8 @@ const db = require('./Database/index');
 const notify = require('./notify');
 const aurionScrapper = require('./AurionScrapperCore/index');
 const axios = require('axios');
-
+const mongoose = require('mongoose');
+const { UnavailableRoom } = require('./Database/Models');
 
 function getUTCDateNow(date) {
     /**
@@ -128,6 +129,85 @@ async function updateMarks() {
 }
 
 
+async function updateUnavailableRooms() {
+
+    console.log('< updateUnavailableRooms >');
+
+    let listOfPlanningDoc;
+    let listOfRooms;
+    try {
+        listOfPlanningDoc = await db.Models.Planning.find();
+        listOfRoomDoc = await db.Models.Room.find();
+    } catch (error) {
+        console.log(`updateMarks error --> ${error}`);
+        return false;
+    }
+
+
+    for (planningDoc of listOfPlanningDoc) {
+
+        for (Week of planningDoc.weeks) {
+
+            for (day of Object.keys(Week.days)) {
+
+                for (elem of Week.days[day]) {
+
+                    // console.log(elem);
+
+                    for (roomDoc of listOfRoomDoc) {
+
+                        if (elem.room.includes(roomDoc.label)) {
+
+                            console.log(`${planningDoc.aurionID} / ${day} :  ${roomDoc.label}`);
+
+                            // On verif si date déjà existante dans la collection Unavailable Rooms
+                            try {
+                                // Si non existante
+
+                                let UnavailableRoomDoc = await db.Models.UnavailableRoom.findOne({ date: day });
+                                // console.log('DATA :', data)
+
+                                if (!UnavailableRoomDoc) {
+                                    // No data found / On créée et sauvegarde la date
+                                    let code = roomDoc.code;
+                                    let [startTime, endTime] = [elem.startTime, elem.endTime];
+                                    let obj = {};
+                                    obj['code'] = code;
+                                    obj['usedSlot'] = [ {'startTime': startTime, 'endTime': endTime} ];
+                                    const doc = db.Models.UnavailableRoom({
+                                        _id: new mongoose.Types.ObjectId(),
+                                        date: day,
+                                        rooms: [obj]
+                                    }, { collection: 'unavailableRoom' });
+                                    
+                                    // sauvegarde mais empeche de passer à la suite tant que non fini
+                                    // https://stackoverflow.com/questions/27447478/force-mongoose-save-callback-to-wait-for-write-to-complete
+                                    await doc.save().then(function (savedPost) {
+                                        self.decorate('doc', savedPost.service, savedPost.id);
+                                    });
+
+                                    break;
+                                }
+                                else {
+                                    // Si date existante dans la collection Unavailable Rooms
+
+                                    UnavailableRoomDoc = await db.Models.UnavailableRoom.findOne({"date": day, rooms.code: roomDoc.code});
+                                    
+
+                                }
+                            } catch (error) {
+                                console.log(`updateUnavailableRooms error --> ${error}`);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
 async function notifyNextCourse() {
     /**
      * NECESSITE QUE LE PLANNING SOIT DEJA ENREGISTRE DANS LA BDD
@@ -135,7 +215,7 @@ async function notifyNextCourse() {
      */
 
     console.log('## CHECK NOTIF PROCHAIN COURS ##');
-    
+
     // Si on est un dimanche, on ne fait rien.
     let day = new Date().getDay()
     if (day == 0) {
@@ -203,5 +283,7 @@ async function notifyNextCourse() {
 module.exports = {
     keepHerokuAlive,
     updateMarks,
-    notifyNextCourse
+    notifyNextCourse,
+    updateUnavailableRooms
 }
+

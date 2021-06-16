@@ -12,7 +12,7 @@ exports.findUserByAurionIDInCollection = async (userAurionID, collectionModelObj
     try {
         let data = await collectionModelObject.findOne({aurionID: userAurionID});
         if(!data) {
-            // No data found (car !data = true si data = null )
+            // No data found (car data = null =>  !data = true )
             console.log(`findUserByAurionIDInCollection --> Utilisateur ${userAurionID} non trouvé dans la collection.`);
             return 'USER_DOES_NOT_EXIST_IN_COLLECTION';
         }
