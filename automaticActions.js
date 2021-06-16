@@ -161,25 +161,25 @@ async function updateUnavailableRooms() {
                             console.log(`${planningDoc.aurionID} / ${day} :  ${roomDoc.label}`);
 
                             // On verif si date déjà existante dans la collection Unavailable Rooms
-                            try {
-                                // Si non existante
 
+                            try {
                                 let UnavailableRoomDoc = await db.Models.UnavailableRoom.findOne({ date: day });
                                 // console.log('DATA :', data)
 
+                                // Si non existante
+
                                 if (!UnavailableRoomDoc) {
                                     // No data found / On créée et sauvegarde la date
-                                    let code = roomDoc.code;
+                                    var label = roomDoc.label;
                                     let [startTime, endTime] = [elem.startTime, elem.endTime];
                                     let obj = {};
-                                    obj['code'] = code;
-                                    obj['usedSlot'] = [ {'startTime': startTime, 'endTime': endTime} ];
+                                    obj[label] = [[startTime, endTime]];
                                     const doc = db.Models.UnavailableRoom({
                                         _id: new mongoose.Types.ObjectId(),
                                         date: day,
-                                        rooms: [obj]
+                                        rooms: obj
                                     }, { collection: 'unavailableRoom' });
-                                    
+
                                     // sauvegarde mais empeche de passer à la suite tant que non fini
                                     // https://stackoverflow.com/questions/27447478/force-mongoose-save-callback-to-wait-for-write-to-complete
                                     await doc.save().then(function (savedPost) {
@@ -191,8 +191,8 @@ async function updateUnavailableRooms() {
                                 else {
                                     // Si date existante dans la collection Unavailable Rooms
 
-                                    UnavailableRoomDoc = await db.Models.UnavailableRoom.findOne({"date": day, rooms.code: roomDoc.code});
-                                    
+                                    // UnavailableRoomDoc = await db.Models.UnavailableRoom.findOne({ "date": day, rooms.code: roomDoc.code });
+
 
                                 }
                             } catch (error) {

@@ -24,9 +24,9 @@ setInterval(automaticActions.updateMarks , 15 * 60 * 1000);
 setInterval(automaticActions.notifyNextCourse , 15 * 60 * 1000);
 
 
-(async () => {
-    await automaticActions.updateUnavailableRooms()
-})()
+// (async () => {
+//     await automaticActions.updateUnavailableRooms()
+// })()
 
 // Launch and config server
 var app = express();
