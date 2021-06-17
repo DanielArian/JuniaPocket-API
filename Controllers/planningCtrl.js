@@ -6,6 +6,16 @@ const { getAurionPassword } = require('../Database/manageUser');
 const notify = require('../notify');
 
 
+function firstTimeDone(aurionID) {
+    // On enleve l'aurionID de la liste des utilisateurs entrain de récupérer leur Planning
+    // Pour la première fois
+    let index = req.app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime.indexOf(aurionID);
+    if (index > -1) { // si c'est la première recup
+        req.app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime.splice(index, 1);
+    }
+}
+
+
 exports.getPlanningOfWeek = async (req, res) => {
     
     let aurionID = req.user.aurionID;   // assuré par le middleware auth.js
@@ -47,11 +57,13 @@ exports.getPlanningOfWeek = async (req, res) => {
         let aurionPassword = await getAurionPassword(aurionID);
         let planningPage = await aurionScrapper.fetch.planning(aurionID, aurionPassword, date);
         if (planningPage == 'Username ou mot de passe invalide.') {
+            firstTimeDone(aurionID);
             return res.status(sCode.unauthorized).json({error: 'Les identifiants aurion ne sont plus valides.'})
         }
         requestedWeek = aurionScrapper.formatPlanning.responseWeekPlanning(planningPage);
     } catch (error) {
         console.log(`getPlanningOfWeek error --> Echec récupération planning aurion de ${aurionID} dans la semaine du ${date}`);
+        firstTimeDone(aurionID);
         return res.status(sCode.serverError).json({ error });
     }
 
@@ -60,10 +72,7 @@ exports.getPlanningOfWeek = async (req, res) => {
         if (availableWeeks.length == 0) {
             const doc = db.managePlanning.createPlanningDocument(aurionID, requestedWeek);
             db.save.saveDoc(doc);
-            // On enleve l'aurionID de la liste des utilisateurs entrain de récupérer leur Planning
-            // Pour la première fois
-            let index = req.app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime.indexOf(aurionID);
-            req.app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime.splice(index, 1);
+            firstTimeDone(aurionID);
         }
         else {
             db.managePlanning.addWeekToPlanningDoc(aurionID, requestedWeek);
@@ -71,6 +80,7 @@ exports.getPlanningOfWeek = async (req, res) => {
         return res.status(sCode.OK).send(JSON.stringify(requestedWeek));
     } catch (error) {
         console.log(`getPlanningOfWeek error --> Echec sauvegarde planning aurion de ${aurionID} dans la semaine du ${date}`);
+        firstTimeDone(aurionID);
         return res.status(sCode.serverError).json({ error });
     }
 }
