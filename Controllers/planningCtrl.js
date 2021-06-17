@@ -58,7 +58,7 @@ exports.getPlanningOfWeek = async (req, res) => {
         let planningPage = await aurionScrapper.fetch.planning(aurionID, aurionPassword, date);
         if (planningPage == 'Username ou mot de passe invalide.') {
             firstTimeDone(aurionID);
-            return res.status(sCode.unauthorized).json({error: 'Les identifiants aurion ne sont plus valides.'})
+            return res.status(sCode.unauthorized).json({error: 'IDENTIFIANTS_AURION_MODIFIES'});
         }
         requestedWeek = aurionScrapper.formatPlanning.responseWeekPlanning(planningPage);
     } catch (error) {
@@ -113,7 +113,7 @@ exports.updateWeek = async (req, res) => {
         let aurionPassword = await getAurionPassword(aurionID);
         let planningPage = await aurionScrapper.fetch.planning(aurionID, aurionPassword, date);
         if (planningPage == 'Username ou mot de passe invalide.') {
-            return res.status(sCode.unauthorized).json({error: 'Les identifiants aurion ne sont plus valides.'})
+            return res.status(sCode.unauthorized).json({error: 'IDENTIFIANTS_AURION_MODIFIES'});
         }
         requestedWeek = aurionScrapper.formatPlanning.responseWeekPlanning(planningPage);
     } catch (error) {

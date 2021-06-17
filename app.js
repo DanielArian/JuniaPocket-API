@@ -37,11 +37,6 @@ app.use(express.urlencoded({ extended: true }));
 // local variables, pour limiter certaines demandes simultannées
 app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime = [];
 
-app.use((req, res, next) => {
-    console.log('inside   -   ', app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime);
-    next();
-})
-
 // Set CORS
 var allowedDomains = [
     'https://juniapocket.vercel.app',

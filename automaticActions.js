@@ -135,7 +135,6 @@ async function updateUnavailableRooms() {
     console.log('< updateUnavailableRooms >');
 
     let listOfPlanningDoc;
-    let listOfRooms;
     try {
         listOfPlanningDoc = await db.Models.Planning.find();
         listOfRoomDoc = await db.Models.Room.find();

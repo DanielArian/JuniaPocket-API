@@ -38,7 +38,7 @@ exports.getMarks = async (req, res) => {
             }
             let marksPageContent = await aurionScrapper.fetch.marks(aurionID, aurionPassword);
             if (marksPageContent == 'Username ou mot de passe invalide.') {
-                return res.status(sCode.unauthorized).json({ error: 'Les identifiants aurion ne sont plus valides.' })
+                return res.status(sCode.unauthorized).json({ error: 'IDENTIFIANTS_AURION_MODIFIES' })
             }
             updatedMarksOfUser = aurionScrapper.formatMarks.getFormatedMarks(marksPageContent);
         } catch (error) {
@@ -93,7 +93,7 @@ exports.updateMarks = async (req, res) => {
         }
         let marksPageContent = await aurionScrapper.fetch.marks(aurionID, aurionPassword);
         if (marksPageContent == 'Username ou mot de passe invalide.') {
-            return res.status(sCode.unauthorized).json({ error: 'Les identifiants aurion ne sont plus valides.' })
+            return res.status(sCode.unauthorized).json({ error: 'IDENTIFIANTS_AURION_MODIFIES' });
         }
         updatedMarksOfUser = aurionScrapper.formatMarks.getFormatedMarks(marksPageContent);
     } catch (error) {

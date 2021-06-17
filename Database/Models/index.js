@@ -4,3 +4,4 @@ exports.User = require('./user');
 exports.NotifPreferences = require('./notifPreferences');
 exports.Room = require('./room');
 exports.UnavailableRoom = require('./unavailableRoomSchema');
+exports.Group = require('./group');
