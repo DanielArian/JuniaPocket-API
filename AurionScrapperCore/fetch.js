@@ -196,6 +196,8 @@ async function planning(username, password, date) {
             // Wait for xml content to be loaded
             await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
             await pendingXhr.waitForAllXhrFinished();
+
+            await page.screenshot({path: 'screen.png'});
         }
 
         // Respond with the page content

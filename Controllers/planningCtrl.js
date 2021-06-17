@@ -15,6 +15,8 @@ exports.getPlanningOfWeek = async (req, res) => {
     // On récupère les éventuelles semaines sauvegardées dans la bdd par l'user
     let availableWeeks = await db.managePlanning.getWeeks(aurionID, db.Models.Planning);
 
+    
+    
     // Si des semaines sont déjà sauv dans la Database, on cherche si la date de la semaine
     // demandée est déjà comprise dans une de ces semaines.
 
@@ -28,6 +30,15 @@ exports.getPlanningOfWeek = async (req, res) => {
     }
 
     // Sinon, on récupère sur Aurion et on rajoute la semaine demandée dans la database
+    
+    // Si c'est la première fois que l'utilisateur récupère un planning
+    // On indique qu'une récupération est en cours pour empecher que cette meme requete
+    // soit refaite avant la fin de celle-ci (via middleware isCurrentlyGettingPlanninfFTFT.js).
+    // Sinon l'user aura plusieurs planning Documents
+    if (availableWeeks.length == 0) {
+        req.app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime.push(aurionID);
+    }
+
 
     // Récupération Planning sur Aurion
     console.log(`Récupération du planning de ${aurionID} dans la semaine du ${date}`);
@@ -49,6 +60,10 @@ exports.getPlanningOfWeek = async (req, res) => {
         if (availableWeeks.length == 0) {
             const doc = db.managePlanning.createPlanningDocument(aurionID, requestedWeek);
             db.save.saveDoc(doc);
+            // On enleve l'aurionID de la liste des utilisateurs entrain de récupérer leur Planning
+            // Pour la première fois
+            let index = req.app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime.indexOf(aurionID);
+            req.app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime.splice(index, 1);
         }
         else {
             db.managePlanning.addWeekToPlanningDoc(aurionID, requestedWeek);

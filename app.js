@@ -28,10 +28,19 @@ setInterval(automaticActions.notifyNextCourse , 15 * 60 * 1000);
 //     await automaticActions.updateUnavailableRooms()
 // })()
 
+
 // Launch and config server
 var app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// local variables, pour limiter certaines demandes simultannées
+app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime = [];
+
+app.use((req, res, next) => {
+    console.log('inside   -   ', app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime);
+    next();
+})
 
 // Set CORS
 var allowedDomains = [

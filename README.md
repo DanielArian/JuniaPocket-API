@@ -178,7 +178,10 @@ la semaine actuelle qui va être récupérée.
 
 ### Réponse attendue
 
+A noter : La première fois que vous utilisez cette requête, si vous renvoyez la même requête avant que la première ne soit complétée, vous recevrez un status code `425` (Too Early) avec en message d'erreur.
+
 A compteter
+
 
 
 ## Vérifier s'il y a des modifications dans un planning <a name="fetch-planning"></a>

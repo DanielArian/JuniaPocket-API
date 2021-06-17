@@ -13,6 +13,7 @@ module.exports = {
     conflict: 409,
     unprocessable: 422,
     locked: 423,
+    tooEarly: 425,
     tooManyRequests: 429,
     serverError: 500,
 
