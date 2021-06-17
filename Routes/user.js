@@ -11,6 +11,7 @@ router.post('/signup', mw.requireSignupParam, mw.requireUserNotAlreadyRegistered
 router.post('/login', mw.requireLoginParam, userCtrl.login);
 
 router.use(mw.auth);
+router.post('/change-aurion-login-credentials', userCtrl.changeAurionLoginCred);
 router.get('/list', userCtrl.getList);
 router.post('/create-group', groupCtrl.createGroup);
 router.get('/delete', userCtrl.delete);

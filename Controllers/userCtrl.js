@@ -108,8 +108,13 @@ exports.getList = async function (req, res) {
 }
 
 
-exports.delete = async (req, res, next) => {
+exports.changeAurionLoginCred = async (req, res) => {
     
+}
+
+
+exports.delete = async (req, res) => {
+
     let aurionID = req.user.aurionID;       // assuré par auth.js
     await db.Models.User.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> User Doc de ${aurionID} deleted!`));
     await db.Models.Planning.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> Planning Doc de ${aurionID} deleted!`));

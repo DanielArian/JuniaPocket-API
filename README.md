@@ -6,6 +6,7 @@ Projet en cours de développement.
 1. [Gestion des utilisateurs](#utilisateurs)
 	  1. [Inscription](#inscription)
 	  2. [Login](#login)
+    3. [Changer ses identifiants Aurion](#changerIdentifiantsAurion)
 2. [Notes](#notes)
     1. [Récupération des notes](#recup-notes)
     2. [Vérifier si de nouvelles notes ont été ajoutées](#fetch-notes)
@@ -80,6 +81,11 @@ Status Code : `401` (Unauthorized) / Utilisateur non trouvé ou mot de passe Jun
 Status Code : `500` (Server Error) / Il y a une erreur interne.
 
 Et d'autres erreur diverses ...
+
+
+## Mettre à jour ses identifiants Aurion <a name="changerIdentifiantsAurion"></a>
+
+Requête `GET` à l'url `/user/change-aurion-login-credentials`
 
 ## Notes <a name="notes"></a>
 
