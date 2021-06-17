@@ -13,7 +13,6 @@ exports.isCurrentlyGettingPlanninfFTFT = async (req, res, next) => {
     
     let index = req.app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime.indexOf(aurionID)
     if (index == -1) {
-        console.log('NEXT FTFF');
         next();
     }
     else {
