@@ -101,15 +101,15 @@ exports.login = async (req, res, next) => {
 
 exports.getList = async function (req, res) {
     res.set('Content-Type', 'application/json');
-    const liste = await User.find();
-    let listid = liste.map(x => [x.name, x.aurionID]);
+    const list = await db.Models.User.find();
+    let listid = list.map(x => [x.name, x.aurionID]);
     console.log(listid);
     res.status(sCode.OK).send(listid);
 }
 
 
 exports.changeAurionLoginCred = async (req, res) => {
-    
+
 }
 
 
