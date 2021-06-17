@@ -6,6 +6,7 @@ const sCode = require('../httpStatus');
 
 const db = require('../Database/index');
 const aurionScrapper = require('../AurionScrapperCore/index');
+const { findOneAndUpdate } = require('../Database/Models/mark');
 
 
 exports.signup = async (req, res, next) => {
@@ -32,9 +33,9 @@ exports.signup = async (req, res, next) => {
     }
 
     // hashage du mdp JuniaPocket
-    let jpPasswordHashed = '';
+    let newJpocketHashedPass = '';
     try {
-        jpPasswordHashed = await bcrypt.hash(jpocketPassword, 10)
+        newJpocketHashedPass = await bcrypt.hash(jpocketPassword, 10)
     } catch (error) {
         console.log(error);
         return res.status(sCode.serverError).json({ error });
@@ -44,7 +45,7 @@ exports.signup = async (req, res, next) => {
     // Et sauvegarde d'un doc de notification de préférence vide
     // dans la collection 'notificationPreferences'
     try {
-        let userDoc = db.manageUser.createUserDocument(aurionID, aurionPassword, jpPasswordHashed, realName);
+        let userDoc = db.manageUser.createUserDocument(aurionID, aurionPassword, newJpocketHashedPass, realName);
         db.save.saveDoc(userDoc);
         db.manageNotifPreferences.saveEmptyNotifPreferencesDoc(aurionID);
         return res.status(sCode.created).json({ message: `Utilisateur créé` })
@@ -107,13 +108,71 @@ exports.getList = async function (req, res) {
     res.status(sCode.OK).send(listid);
 }
 
+exports.changeJpocketPassword = async function (req, res) {
 
-exports.changeAurionLoginCred = async (req, res) => {
+    if(!req.body.hasOwnProperty('jpocketPassword')) {
+        return res.status(sCode.badRequest).json({error: 'Bad Request : pas de nouveau mot de pase fourni.'})
+    }
 
+    let updatedJpocketPass = req.body.jpocketPassword;
+    
+    // hashage du mdp JuniaPocket
+    // Puis update dans BDD
+    let newJpocketHashedPass = '';
+    try {
+        newJpocketHashedPass = await bcrypt.hash(updatedJpocketPass, 10)
+        await db.Models.User.updateOne({aurionID: req.user.aurionID},
+            {$set: {jpocketPassword: newJpocketHashedPass}}).then('Password updated!');
+        return res.status(sCode.OK).json({message: 'Mot de passe Junia Pocket mis à jour !'});
+    } catch (error) {
+        console.log(error);
+        return res.status(sCode.serverError).json({ error });
+    }
 }
 
 
-exports.delete = async (req, res) => {
+exports.changeAurionLoginCred = async function (req, res)  {
+
+    let oldAurionID = req.user.aurionID;            // assuré par auth.js
+
+    let updatedAurionID = req.body.aurionID;        // assurés par requireUserNotAlreadyRegistered.js
+    let updatedAurionPass = req.body.aurionPassword;
+
+    // Verification des identifiants Aurion, et si valides, recuperation du nom de l'utilisateur
+    let realName = '';
+    try {
+        let name = await aurionScrapper.fetch.checkAurionIDAndGetNameIfOk(updatedAurionID, updatedAurionPass);
+        if (name == 'INVALID') {
+            return res.status(sCode.unauthorized).json({ error: 'INVALID_AURION_LOGIN_CRED' });
+        }
+        else {
+            realName = name;
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(sCode.serverError).json({ error });
+    }
+
+    // On vérifie que ce compte Aurion appartient bien à la même personne
+    let userDoc = await db.search.findUserByAurionIDInCollection(oldAurionID, db.Models.User);
+    if (userDoc.realName != realName) {
+        return res.status(sCode.unauthorized).json({ error: 'NOT_YOUR_AURION_ACCOUNT' });
+    }
+
+    // Si c'est le compte Aurion de la même personne
+
+    try {
+        await db.Models.User.updateOne({ aurionID: oldAurionID },
+            { $set: { aurionID: updatedAurionID, aurionPassword: updatedAurionPass } }).then('Cred updated!');
+        return res.status(sCode.OK).json({ message: 'Identifiants mis à jour' });
+    } catch (error) {
+        console.log(`changeAurionLoginCred error --> ${error}`);
+        return res.status(sCode.serverError).json({ error });
+    }
+}
+
+
+exports.delete = async function (req, res)  {
 
     let aurionID = req.user.aurionID;       // assuré par auth.js
     await db.Models.User.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> User Doc de ${aurionID} deleted!`));
@@ -130,7 +189,7 @@ exports.delete = async (req, res) => {
 }
 
 
-exports.setNotificationsPreferences = async (req, res) => {
+exports.setNotificationsPreferences = async function (req, res) {
     let aurionID = req.user.aurionID;       // assuré par auth.js
     let PSID = req.body.messengerPSID;
     let mail = req.body.mail;

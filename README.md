@@ -7,6 +7,8 @@ Projet en cours de développement.
 	  1. [Inscription](#inscription)
 	  2. [Login](#login)
     3. [Changer ses identifiants Aurion](#changerIdentifiantsAurion)
+    4. [Changer son mot de passe Junia Pocket](#change-jp-password)
+    5. [Supprimer son compte Junia Pocket](#supprimer-compte)
 2. [Notes](#notes)
     1. [Récupération des notes](#recup-notes)
     2. [Vérifier si de nouvelles notes ont été ajoutées](#fetch-notes)
@@ -85,7 +87,55 @@ Et d'autres erreur diverses ...
 
 ## Mettre à jour ses identifiants Aurion <a name="changerIdentifiantsAurion"></a>
 
-Requête `GET` à l'url `/user/change-aurion-login-credentials`
+### Requête à effectuer 
+
+Requête `POST` à l'url :  `/user/change-aurion-login-credentials`
+
+Le body de la requête doit contenir :
+
+```js
+{
+  aurionID: <updated__value>
+  aurionPassword: <updated_value>
+}
+```
+
+### Réponses possibles (non exhaustif)
+
+Status code : `200 (OK)` 
+
+Status code :`401 (Unauthorized)`  et en body `{error: 'INVALID_AURION_LOGIN_CRED' }`
+
+Status code :`401 (Unauthorized)`  et en body `{error: 'NOT_YOUR_AURION_ACCOUNT' }`
+
+Bad Request, Server Error, etc...
+
+
+## Changer son mot de passe Junia Pocket <a name="change-jp-password"></a>
+
+### Requête à effectuer 
+
+Requête `POST` à l'url :  `/user/change-jpocket-password`
+
+Le body de la requête doit contenir :
+
+```js
+{
+  jpocketPassword: <new_value>
+}
+```
+
+### Réponses possibles (non exhaustif)
+
+Status code : `200 (OK)` 
+
+Status code :`401 (Unauthorized)`
+
+Bad Request, Server Error, etc...
+
+## Supprimer son compte Junia Pocket <a name="supprimer-compte"></a>
+
+Requête `GET` à l'url :  `/user/delete`
 
 ## Notes <a name="notes"></a>
 

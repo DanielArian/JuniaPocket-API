@@ -43,6 +43,10 @@ exports.requireNotifPrefParam = (req, res, next) => {
     return midlw('requireNotifPrefParam', req, res, next);
 }
 
+exports.requireAurionLoginCred = (req, res, next) => {
+    return midlw('requireAurionLoginCred', req, res, next);
+}
+
 exports.isCurrentlyGettingPlanninfFTFT = (req, res, next) => {
     return midlw('isCurrentlyGettingPlanninfFTFT', req, res, next);
 }
