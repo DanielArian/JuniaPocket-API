@@ -4,6 +4,34 @@ const aurionScrapper = require('../AurionScrapperCore/index');
 const notify = require('../notify');
 
 
+function renameProperty (obj, oldKey, newKey) {
+    // Do nothing if the names are the same
+    if (oldKey !== newKey) {
+        Object.defineProperty(obj, newKey,
+            Object.getOwnPropertyDescriptor(obj, oldKey));
+        delete obj[oldKey];
+    }
+};
+
+
+function renameLibellePropertyToEpreuve(apiResponse) {
+    /**
+     * A la demande du front. Ce n'est techniquement pas nécessaire.
+     * Si la propriété "Libellé" n'existe pas, aucune modif n'est effectuée
+     * 
+     * @param {Array} apiRespnse - objet renvoyé par la fonction fomatMarks.getFormatedMarks d'aurionScrapper
+     */
+
+    // si le premier elem a cette prop, ils l'ont tous.
+    if (apiResponse[0].hasOwnProperty('Libellé')) {
+        for (markObj of apiResponse) {
+            renameProperty(markObj, 'Libellé', 'Epreuve');
+        }
+    }
+    return apiResponse;
+}
+
+
 exports.getMarks = async (req, res) => {
 
     // suite à l'authentification on récupère l'aurionID de l'utilisateur qui
@@ -29,7 +57,7 @@ exports.getMarks = async (req, res) => {
         console.log(`Première récupération des notes de ${aurionID} sur Aurion. Connexion...`);
 
         // On récupère notes sur Aurion
-        let updatedMarksOfUser;
+        let marksOfUser;
         try {
             let aurionPassword = await db.manageUser.getAurionPassword(aurionID);
             if (aurionPassword == '') {
@@ -40,7 +68,7 @@ exports.getMarks = async (req, res) => {
             if (marksPageContent == 'Username ou mot de passe invalide.') {
                 return res.status(sCode.unauthorized).json({ error: 'IDENTIFIANTS_AURION_MODIFIES' })
             }
-            updatedMarksOfUser = aurionScrapper.formatMarks.getFormatedMarks(marksPageContent);
+            marksOfUser = aurionScrapper.formatMarks.getFormatedMarks(marksPageContent);
         } catch (error) {
             console.log(`getMarks error --> Echec de la récupération des notes Aurion de ${aurionID} -->  ${error}`)
             return res.status(sCode.serverError).json({ error });
@@ -48,7 +76,7 @@ exports.getMarks = async (req, res) => {
 
         // On les sauvegarde dans la Database pour les prochaines requetes
         try {
-            let MarkDoc = db.manageMark.createMarkDocument(aurionID, updatedMarksOfUser);
+            let MarkDoc = db.manageMark.createMarkDocument(aurionID, marksOfUser);
             db.save.saveDoc(MarkDoc);
         } catch (error) {
             console.log(`getMarks error --> Echec sauvegarde des notes de ${aurionID} dans Marks --> ${error}`)
@@ -56,7 +84,10 @@ exports.getMarks = async (req, res) => {
         }
 
         // On envoie les notes à l'utilisateur
-        return res.status(sCode.OK).send(JSON.stringify(updatedMarksOfUser));
+        // Mais avant, à la demande du front, si existe, on renome la property 'Libellé' par 'Epreuve'
+        // JUSTE lors de l'envoi, pas dans la databse
+        renameLibellePropertyToEpreuve(marksOfUser, 'Libellé', 'Épreuve');
+        return res.status(sCode.OK).send(JSON.stringify(marksOfUser));
     }
 
     // Si une erreur s'est produite dans la lecture de la BDD
@@ -66,8 +97,11 @@ exports.getMarks = async (req, res) => {
     }
 
     // Notes déjà existantes dans la Database, on les renvoie
+    // Mais avant, à la demande du front, si existe, on renome la property 'Libellé' par 'Epreuve'
+    // JUSTE lors de l'envoi, pas dans la databse
 
-    res.status(sCode.OK).send(JSON.stringify(marksData));
+    renameLibellePropertyToEpreuve(marksData, 'Libellé', 'Épreuve');
+    return res.status(sCode.OK).send(JSON.stringify(marksData));
 }
 
 
@@ -101,30 +135,9 @@ exports.updateMarks = async (req, res) => {
         return res.status(sCode.serverError).json({ error });
     }
 
-    // // On vérifie s'il y a au moins une nouvelle note
-    // let oldMarksDoc = await db.search.findUserByAurionIDInCollection(aurionID, db.Models.Mark);
-    // let listOfNewMarks = db.manageMark.getListOfNewMarks(oldMarksDoc.marks, updatedMarksOfUser);
-    // let nbOfNewMarks = listOfNewMarks.length;
-
-    // // Envoi notification si au moins une nouvelle note et si update automatique
-    // if (nbOfNewMarks > 0 && req.body.hasOwnProperty('isAutomaticUpdate')) {
-    //     // On génère le contenu de la notif
-    //     let notifTitle = 'Nouvelle note !\n\n';
-    //     if (nbOfNewMarks > 1) notifTitle = 'Nouvelles notes !\n';
-    //     let notifContent = '';
-    //     for (mark of listOfNewMarks) {
-    //         let keys = Object.keys(mark);
-    //         for (k of keys) {
-    //             notifContent += k + ': ' + mark[k] + '\n'
-    //         }
-    //         notifContent += '\n';
-    //     }
-    //     // envoi
-    //     notify(aurionID, notifTitle, notifContent);
-    // }
-
     // On met a jour la database
     // On pourrait sauter cette étape en utilisant la condition (nbOfNewMarks == 0)
+    // mais l'heure d'update ne serait pas mise à jour
     try {
         db.manageMark.updateMarksInDoc(aurionID, updatedMarksOfUser);
     } catch (error) {
