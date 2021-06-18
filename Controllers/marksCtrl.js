@@ -77,7 +77,7 @@ exports.getMarks = async (req, res) => {
         // On les sauvegarde dans la Database pour les prochaines requetes
         try {
             let MarkDoc = db.manageMark.createMarkDocument(aurionID, marksOfUser);
-            db.save.saveDoc(MarkDoc);
+            await db.save.saveDoc(MarkDoc);
         } catch (error) {
             console.log(`getMarks error --> Echec sauvegarde des notes de ${aurionID} dans Marks --> ${error}`)
             return res.status(sCode.unauthorized).json({ error });
@@ -86,8 +86,9 @@ exports.getMarks = async (req, res) => {
         // On envoie les notes à l'utilisateur
         // Mais avant, à la demande du front, si existe, on renome la property 'Libellé' par 'Epreuve'
         // JUSTE lors de l'envoi, pas dans la databse
-        renameLibellePropertyToEpreuve(marksOfUser, 'Libellé', 'Épreuve');
-        return res.status(sCode.OK).send(JSON.stringify(marksOfUser));
+        let marksCopy = JSON.parse(JSON.stringify(marksOfUser)); // copie
+        renameLibellePropertyToEpreuve(marksCopy, 'Libellé', 'Épreuve');
+        return res.status(sCode.OK).send(JSON.stringify(marksCopy));
     }
 
     // Si une erreur s'est produite dans la lecture de la BDD
@@ -100,8 +101,9 @@ exports.getMarks = async (req, res) => {
     // Mais avant, à la demande du front, si existe, on renome la property 'Libellé' par 'Epreuve'
     // JUSTE lors de l'envoi, pas dans la databse
 
-    renameLibellePropertyToEpreuve(marksData, 'Libellé', 'Épreuve');
-    return res.status(sCode.OK).send(JSON.stringify(marksData));
+    let marksCopy = JSON.parse(JSON.stringify(marksData));           // copie
+    renameLibellePropertyToEpreuve(marksCopy, 'Libellé', 'Épreuve');
+    return res.status(sCode.OK).send(JSON.stringify(marksCopy));
 }
 
 
