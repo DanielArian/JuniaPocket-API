@@ -1,8 +1,8 @@
 const sCode = require('../httpStatus');
 
-// isCurrentlyGettingPlanninfForTheFirstTime
+// isCurrentlyGettingMarkForTheFirstTime
 
-exports.isCurrentlyGettingPlanninfFTFT = async (req, res, next) => {
+exports.isCurrentlyGettingMarkFTFT = async (req, res, next) => {
     /**
      * A APPELER APRES LE MIDDLEWARE AUTH
      * Laisse passer la requête /planning/get-week ssi l'utilisateur n'est pas en train de
@@ -11,7 +11,7 @@ exports.isCurrentlyGettingPlanninfFTFT = async (req, res, next) => {
 
     let aurionID = req.user.aurionID;   // assuré par mw auth.js
     
-    let index = req.app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime.indexOf(aurionID)
+    let index = req.app.locals.listOfUsersCurrentlyGettingMarkForFirstTime.indexOf(aurionID)
     if (index == -1) {
         next();
     }

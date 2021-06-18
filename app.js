@@ -36,6 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // local variables, pour limiter certaines demandes simultannées
 app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime = [];
+app.locals.listOfUsersCurrentlyGettingMarkForFirstTime = [];
 
 // Set CORS
 var allowedDomains = [

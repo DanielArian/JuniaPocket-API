@@ -47,6 +47,10 @@ exports.requireAurionLoginCred = (req, res, next) => {
     return midlw('requireAurionLoginCred', req, res, next);
 }
 
-exports.isCurrentlyGettingPlanninfFTFT = (req, res, next) => {
-    return midlw('isCurrentlyGettingPlanninfFTFT', req, res, next);
+exports.isCurrentlyGettingPlanningfFTFT = (req, res, next) => {
+    return midlw('isCurrentlyGettingPlanningfFTFT', req, res, next);
+}
+
+exports.isCurrentlyGettingMarkFTFT = (req, res, next) => {
+    return midlw('isCurrentlyGettingMarkFTFT', req, res, next);
 }

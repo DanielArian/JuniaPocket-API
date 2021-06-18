@@ -4,7 +4,7 @@ const aurionScrapper = require('../AurionScrapperCore/index');
 const notify = require('../notify');
 
 
-function renameProperty (obj, oldKey, newKey) {
+function renameProperty(obj, oldKey, newKey) {
     // Do nothing if the names are the same
     if (oldKey !== newKey) {
         Object.defineProperty(obj, newKey,
@@ -32,6 +32,16 @@ function renameLibellePropertyToEpreuve(apiResponse) {
 }
 
 
+function firstTimeDone(req, aurionID) {
+    // On enleve l'aurionID de la liste des utilisateurs entrain de récupérer leur NOTES
+    // Pour la première fois
+    let index = req.app.locals.listOfUsersCurrentlyGettingMarkForFirstTime.indexOf(aurionID);
+    if (index > -1) { // si c'est la première recup
+        req.app.locals.listOfUsersCurrentlyGettingMarkForFirstTime.splice(index, 1);
+    }
+}
+
+
 exports.getMarks = async (req, res) => {
 
     // suite à l'authentification on récupère l'aurionID de l'utilisateur qui
@@ -53,6 +63,14 @@ exports.getMarks = async (req, res) => {
     // Si l'utilisateur n'a pas pas encore de notes dans notre Database
 
     if (marksData.length == 0) {
+
+        // Si c'est la première fois que l'utilisateur récupère ses notes
+        // On indique qu'une récupération est en cours pour empecher que cette meme requete
+        // soit refaite avant la fin de celle-ci (via middleware isCurrentlyGettingMarkfFTFT.js).
+        // Sinon l'user aura plusieurs marks Documents
+        req.app.locals.listOfUsersCurrentlyGettingMarkForFirstTime.push(aurionID);
+
+
         console.log(`getMarks --> Notes de ${aurionID} non existante dans la collection "marks".`);
         console.log(`Première récupération des notes de ${aurionID} sur Aurion. Connexion...`);
 
@@ -62,14 +80,17 @@ exports.getMarks = async (req, res) => {
             let aurionPassword = await db.manageUser.getAurionPassword(aurionID);
             if (aurionPassword == '') {
                 console.log(`getMarks --> Erreur dans la lecture du mdp aurion dans la collection User`)
+                firstTimeDone(req, aurionID)
                 return res.status(sCode.serverError).json({ error: '' });
             }
             let marksPageContent = await aurionScrapper.fetch.marks(aurionID, aurionPassword);
             if (marksPageContent == 'Username ou mot de passe invalide.') {
+                firstTimeDone(req, aurionID)
                 return res.status(sCode.unauthorized).json({ error: 'IDENTIFIANTS_AURION_MODIFIES' })
             }
             marksOfUser = aurionScrapper.formatMarks.getFormatedMarks(marksPageContent);
         } catch (error) {
+            firstTimeDone(req, aurionID)
             console.log(`getMarks error --> Echec de la récupération des notes Aurion de ${aurionID} -->  ${error}`)
             return res.status(sCode.serverError).json({ error });
         }
@@ -83,6 +104,9 @@ exports.getMarks = async (req, res) => {
             return res.status(sCode.unauthorized).json({ error });
         }
 
+        // Première récup et sauvegarde finie
+        firstTimeDone(req, aurionID)
+        
         // On envoie les notes à l'utilisateur
         // Mais avant, à la demande du front, si existe, on renome la property 'Libellé' par 'Epreuve'
         // JUSTE lors de l'envoi, pas dans la databse
