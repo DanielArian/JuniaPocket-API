@@ -91,6 +91,8 @@ Et d'autres erreur diverses ...
 
 Requête `POST` à l'url :  `/user/change-aurion-login-credentials`
 
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
 Le body de la requête doit contenir :
 
 ```js
@@ -116,6 +118,8 @@ Bad Request, Server Error, etc...
 ### Requête à effectuer 
 
 Requête `POST` à l'url :  `/user/change-jpocket-password`
+
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
 
 Le body de la requête doit contenir :
 

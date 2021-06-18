@@ -52,7 +52,7 @@ function updateWeek(aurionID, date, updatedWeek) {
     // effectuer une recherche dans la bdd en fonction de la key beginDate
 
     let utcDate = convertDateStringToUTCDate(date);
-    while (utcDate.getDay() != 1) { // On se ramène à un lundi (1), sachant que 
+    while (utcDate.getDay() != 1) { // On se ramène à un lundi (1), sachant que dimanche = 0
         utcDate.setDate(utcDate.getDate() - 1);
     }
     let utcDateStringWithoutTime = utcDate.toUTCString().split(' 00:')[0];
@@ -210,6 +210,7 @@ function getListOfModifiedDays(oldWeek, updatedWeek) {
 
 
 module.exports = {
+    convertDateStringToUTCDate,
     createPlanningDocument,
     updateWeek,
     getWeeks,
