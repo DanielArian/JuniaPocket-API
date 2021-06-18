@@ -10,9 +10,37 @@ function isTimeInferior(timeA, timeB) {
 
     let timeAstr = timeA.split(':')[0] + timeA.split(':')[1];
     let timeBstr = timeB.split(':')[0] + timeB.split(':')[1];
-    if (Number(timeAstr) <= Number(timeBstr)) {return true}
+    if (Number(timeAstr) <= Number(timeBstr)) { return true }
     else return false;
 }
+
+
+function getListAvailableSlots(listOfUsedSlots) {
+    /**
+     * On donne en argument la liste des créneaux utilisés pour une salle
+     * et renvoie les créneaux libres pour cette salle (cf. exemple)
+     * On considère qu'une journée commence à 7h30 et finie à 21h.
+     * 
+     * Exemple :
+     * Entrée : [ [08:00, 10:00], [14:35, 15:30]]
+     * Sortie : [ [07:30, 08:00], [10:00, 14:35], [15:30, 21:00] ]
+     */
+
+    let tmp = '07:30-';
+    for (unavailableSlot of listOfUsedSlots) {
+        availableSlotsString += `${unavailableSlot[0]}X${unavailableSlot[1]}-`
+    }
+    availableSlotsString += '21:00';
+
+    let availableSlots = []
+    
+    for (slot of availableSlotsString.split('X')) {
+        availableSlots.push(slot.split('-'));
+    }
+    console.log()
+    return availableSlots;
+}
+
 
 async function getListOfAvailableRooms(date, beginTime, usingTime) {
     /**
@@ -39,20 +67,8 @@ async function getListOfAvailableRooms(date, beginTime, usingTime) {
     for (roomObj of listAllRoomsDoc) {
 
         if (Object.keys(unavailableRoomDoc.rooms).includes(roomObj.label)) {
-            let usedSlotForRoom = unavailableRoomDoc.rooms[roomObj.label]
 
-            for (unavailableSlot of usedSlotForRoom) {
 
-                let beginTimeOfUnavailableSlot = unavailableSlot[0];
-                let endTimeOfUnavailableSlot = unavailableSlot[0];
-
-                if (isTimeInferior(beginTime, beginTimeOfUnavailableSlot)) {
-
-                }
-                if ("(isTimeInferior(beginTimeOfUnavailableSlot, beginTime) && "isTimeInferior(beginTime, endTimeOfUnavailableSlot))) {
-
-                }
-            }
         }
         else {
             let obj = { label: roomObj.label, timeLimit: null }

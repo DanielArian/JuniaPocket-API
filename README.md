@@ -141,6 +141,8 @@ Bad Request, Server Error, etc...
 
 Requête `GET` à l'url :  `/user/delete`
 
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
 ## Notes <a name="notes"></a>
 
 ## Récupération des notes <a name="recup-notes"></a>
