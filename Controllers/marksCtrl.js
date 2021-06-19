@@ -25,7 +25,7 @@ function renameLibellePropertyToEpreuve(apiResponse) {
     // si le premier elem a cette prop, ils l'ont tous.
     if (apiResponse[0].hasOwnProperty('Libellé')) {
         for (markObj of apiResponse) {
-            renameProperty(markObj, 'Libellé', 'Epreuve');
+            renameProperty(markObj, 'Libellé', '\u00C9preuve');
         }
     }
     return apiResponse;

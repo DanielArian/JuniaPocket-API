@@ -6,6 +6,8 @@ const routes = require('./Routes/index');
 const mw = require('./Middlewares/index');
 const automaticActions = require('./automaticActions');
 
+const roomCtrl = require('./Controllers/roomCtrl');
+
 const isTokenValidCtrl = require('./Controllers/isTokenValid');
 
 const dbUsername = process.env.DB_USERNAME || config.dbUsername;
@@ -67,6 +69,7 @@ app.use('/user', routes.user);
 app.use(mw.auth);
 app.use('/marks', routes.marks);
 app.use('/planning', routes.planning);
+app.post('/available-rooms', roomCtrl.getAvailableRoomsByUserPreferences)
 
 app.listen(port, function () {
     console.log(`Listening on Port ${port}`);
