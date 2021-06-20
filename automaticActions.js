@@ -3,7 +3,7 @@ const notify = require('./notify');
 const aurionScrapper = require('./AurionScrapperCore/index');
 const axios = require('axios');
 const mongoose = require('mongoose');
-const { UnavailableRoom } = require('./Database/Models');
+
 const { forEach } = require('lodash');
 
 function getUTCDateNow(date) {
@@ -125,7 +125,82 @@ async function updateMarks() {
         else {
             console.log(`updateMarks --> ${aurionID} n'a pas notes déjà existantes. Pas de MAJ possible.`);
         }
+    }
+}
 
+
+async function updatePlanning () {
+
+    console.log('## MAJ AUTO DES PLANNING ##');
+    let listOfUserDoc;
+    try {
+        listOfUserDoc = await db.Models.User.find();
+    } catch (error) {
+        console.log(`updatePlanning error --> ${error}`);
+        return false;
+    }
+    let date = ''
+
+    // console.log('LIST :', listOfUserDoc)
+
+    for (user of listOfUserDoc) {
+
+        let aurionID = user.aurionID;
+        let aurionPassword = user.aurionPassword;
+
+        console.log(`Mise à jour planning semaine de ${aurionID}`);
+
+        // On verifie que l'user a deja un planning de sauvegardé pour la semaine actuelle
+        // Sinon on ne fait rien
+
+        let weekToUpdate = await db.managePlanning.findWeekPlanningFromDate(aurionID, date);
+
+        if (weekToUpdate != null && weekToUpdate != 'ERROR') {
+
+            // Récupération sur Aurion du Planning Semaine demandée 
+            console.log(`Récupération du planning de ${aurionID} dans la semaine actuelle`);
+            let requestedWeek;
+            try {
+                let planningPage = await aurionScrapper.fetch.planning(aurionID, aurionPassword, date);
+                if (planningPage == 'Username ou mot de passe invalide.') {
+                    console.log('IDENTIFIANTS_AURION_MODIFIES');
+                }
+                requestedWeek = await aurionScrapper.formatPlanning.responseWeekPlanning(planningPage);
+            } catch (error) {
+                console.log(`updatePlanning error --> Echec récupération planning aurion de ${aurionID} dans la semaine actuelle`);
+            }
+
+            // On vérifie s'il y a eu des modification d'emploi du temps
+            let listOfModifiedDays = db.managePlanning.getListOfModifiedDays(weekToUpdate, requestedWeek);
+
+            console.log('listOfModifiedDays:', listOfModifiedDays);
+
+            // S'il y a modification et que mise à jour automatique
+            // on envoie une notification à l'utilisateur
+            if (listOfModifiedDays.length > 0 ) {
+                // Génération contenu de la notif
+                let notifTitle = `Modifications Planning détectées : ${listOfModifiedDays[0]}`;
+                let notifContent = ``;
+                if (listOfModifiedDays.length > 1) {
+                    notifTitle = `Modifications Planning détectées aux dates suivantes :`;
+                    for (dateDay of listOfModifiedDays) {
+                        notifContent += dateDay + '\n';
+                    }
+                }
+                // Envoi de la notif
+                notify(aurionID, notifTitle, notifContent);
+            }
+            else {
+                console.log(`updatePlanning --> Pas de modifications de planning dans la semaine actuelle`);
+            }
+
+            // Mise à jour dans la BDD de la semaine demandée
+            try {
+                await db.managePlanning.updateWeek(aurionID, date, requestedWeek);
+            } catch (error) {
+                console.log(error);
+            }
+        }
     }
 }
 
@@ -145,15 +220,9 @@ async function updateUnavailableRooms() {
 
 
     for (planningDoc of listOfPlanningDoc) {
-
         for (Week of planningDoc.weeks) {
-
             for (day of Object.keys(Week.days)) {
-
                 for (evenement of Week.days[day]) {
-
-                    console.log(evenement);
-
                     for (roomDoc of listOfRoomDoc) {
 
                         if (evenement.room.includes(roomDoc.label)) {
@@ -164,7 +233,6 @@ async function updateUnavailableRooms() {
 
                             try {
                                 let UnavailableRoomDoc = await db.Models.UnavailableRoom.findOne({ date: day });
-                                console.log('UNAVAI DOC :', UnavailableRoomDoc);
 
                                 // Si non existante
 
@@ -174,6 +242,7 @@ async function updateUnavailableRooms() {
                                     let [startTime, endTime] = [evenement.startTime, evenement.endTime];
                                     let obj = {};
                                     obj[label] = [[startTime, endTime]];
+
                                     const doc = db.Models.UnavailableRoom({
                                         _id: new mongoose.Types.ObjectId(),
                                         date: day,
@@ -181,7 +250,6 @@ async function updateUnavailableRooms() {
                                     }, { collection: 'unavailableRoom' });
 
                                     // sauvegarde mais empeche de passer à la suite tant que non fini
-                                    // https://stackoverflow.com/questions/27447478/force-mongoose-save-callback-to-wait-for-write-to-complete
                                     await doc.save().then(console.log('first save!'));
 
                                     break;
@@ -191,7 +259,6 @@ async function updateUnavailableRooms() {
 
                                     // On verif si la salle est déjà existante ou non
                                     let isRoomAlreadyThere = Object.keys(UnavailableRoomDoc.rooms).includes(roomDoc.label);
-                                    console.log('isRoomAlreadyThere:', isRoomAlreadyThere)
 
                                     if (isRoomAlreadyThere) {
 
@@ -206,32 +273,33 @@ async function updateUnavailableRooms() {
                                                 isNew = false;
                                             }
                                         });
-                                        console.log('isNew :', isNew);
 
                                         // Si nouveau créneau, on l'ajoute et on save
                                         if (isNew) {
                                             let Slot = [evenement.startTime, evenement.endTime]
                                             UnavailableRoomDoc.rooms[roomDoc.label].push(Slot);
+                                            // on trie les creneaux par horaires
                                             UnavailableRoomDoc.rooms[roomDoc.label].sort((a, b) => {
                                                 let strStartTimeA = a[0].split(':')[0] + a[0].split(':')[1];
                                                 let strStartTimeB = b[0].split(':')[0] + b[0].split(':')[1];
                                                 return Number(strStartTimeA) - Number(strStartTimeB);
                                             })
-                                            // sauvegarde mais empeche de passer à la suite tant que non fini
-                                            // https://stackoverflow.com/questions/27447478/force-mongoose-save-callback-to-wait-for-write-to-complete
 
-                                            
                                             var pushObj = {};
                                             pushObj['rooms.' + label] = [evenement.startTime, evenement.endTime];
                                             db.Models.UnavailableRoom.updateOne({ date: day }, { $push: pushObj }).then(console.log('updated!'));
                                             break;
                                         }
                                     }
-                                    else {
+                                    else { // Si la salle n'existe pas encore à cette date on la rajoute
 
+                                        var label = roomDoc.label;
+                                        let [startTime, endTime] = [evenement.startTime, evenement.endTime];
+                                        let obj = {};
+                                        obj[label] = [[startTime, endTime]];
+
+                                        db.Models.UnavailableRoom.updateOne({ date: day }, { $push: obj }).then(console.log('room added to date!'));
                                     }
-
-
                                 }
                             } catch (error) {
                                 console.log(`updateUnavailableRooms error --> ${error}`);
@@ -242,7 +310,6 @@ async function updateUnavailableRooms() {
             }
         }
     }
-
 }
 
 
@@ -321,7 +388,8 @@ async function notifyNextCourse() {
 module.exports = {
     keepHerokuAlive,
     updateMarks,
-    notifyNextCourse,
-    updateUnavailableRooms
+    updatePlanning,
+    updateUnavailableRooms,
+    notifyNextCourse
 }
 

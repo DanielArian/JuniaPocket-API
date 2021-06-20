@@ -47,6 +47,10 @@ exports.requireAurionLoginCred = (req, res, next) => {
     return midlw('requireAurionLoginCred', req, res, next);
 }
 
+exports.requireAvailableRoomReqParam = (req, res, next) => {
+    return midlw('requireAvailableRoomReqParam', req, res, next);
+}
+
 exports.isCurrentlyGettingPlanningfFTFT = (req, res, next) => {
     return midlw('isCurrentlyGettingPlanningfFTFT', req, res, next);
 }

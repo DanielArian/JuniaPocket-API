@@ -150,13 +150,14 @@ async function findWeekPlanningFromDate(aurionID, date) {
     /**
      * Recherche dans la database parmi les semaines enregistrés d'un user 
      * celle qui contient la date donnée en argument (au format 'jj/mm/yyyy').
+     * Si l'argument date est une chaine vide, on considère que la date
+     * est la date du jour.
      * 
      * Renvoie l'Object de l'array 'weeks' qui contient cette date
      * Si cette date n'est présente dans aucune semaine sauvegardée,
      * renvoie null.
      * 
-     * Si l'argument date est une chaine vide, on considère que la date
-     * est la date du jour.
+     * 
      */
 
     let utcDateObject = convertDateStringToUTCDate(date);

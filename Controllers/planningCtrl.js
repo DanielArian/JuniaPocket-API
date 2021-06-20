@@ -127,7 +127,7 @@ exports.updateWeek = async (req, res) => {
 
     // S'il y a modification et que mise à jour automatique
     // on envoie une notification à l'utilisateur
-    if (listOfModifiedDays.length > 0 && req.body.hasOwnProperty('isAutomaticUpdate')) {
+    if (listOfModifiedDays.length > 0 ) {
         // Génération contenu de la notif
         let notifTitle = `Modifications Planning détectées : ${listOfModifiedDays[0]}`;
         let notifContent = ``;

@@ -41,21 +41,54 @@ function isTimeInferior(timeA, timeB) {
     else return false;
 }
 
+function addZeroBefore(n) {
+    return (n < 10 ? '0' : '') + n;
+}
+
+
+function getSeconds(timeHHMM) {
+    /**
+     * @param {Number} timeHHMM - 'HH:MM'
+     * 
+     * Renvoie le nombre de secondes écoulées depuis minuit.
+     */
+
+    return Number(timeHHMM.split(':')[0] * 3600 + timeHHMM.split(':')[1] * 60);
+}
+
+
+function isRoomAvailableLongEnough(beginTime, timeToSpendInRoom, endOfAvailabilityTime) {
+    /**
+     * @param {String} beginTime - 'HH:MM'
+     * @param {String} timeToSpendInRoom - 'HH:MM'
+     * @param {String} endOfAvailabilityTime - 'HH:MM'
+     */
+
+    secondsBeginTime = getSeconds(beginTime);
+    secondsTimeToSpend = getSeconds(timeToSpendInRoom);
+    secondsEndOfAvailabilityTime = getSeconds(endOfAvailabilityTime);
+
+    let isAvailableLongEnough = (secondsBeginTime + secondsTimeToSpend) <= secondsEndOfAvailabilityTime;
+
+    return isAvailableLongEnough;
+}
+
 
 async function getListOfAvailableRooms(date, beginTime, timeToSpendInRoom) {
     /**
-     * beginTime = 'HH:MM'
-     * return [list of room label] ou null
+     * date = 'jj/mm/aaaa' (si '' => date actuelle)
+     * beginTime = 'HH:MM' (si '' =>  heure de la requête)
+     * timeToSpendInRoom = 'HH:MM' (durée) (si '' => prends pas en compte ce critère)
+     * return [list of object] si des room sont dispo, return [] sinon
      */
 
     date = db.managePlanning.convertDateStringToUTCDate(date).toUTCString();
-    console.log(date);
 
     // Si l'heure de début n'est pas renseignée, on prends l'heure de la requête
     if (beginTime == '') {
         let dateNow = new Date();
         let jetlag = 2;
-        beginTime = `${dateNow.getHours() + jetlag}:${dateNow.getUTCMinutes()}`;
+        beginTime = `${dateNow.getUTCHours() + jetlag}:${addZeroBefore(dateNow.getUTCMinutes())}`;
     }
 
     // On récupère la liste des salles
@@ -65,7 +98,7 @@ async function getListOfAvailableRooms(date, beginTime, timeToSpendInRoom) {
     let unavailableRoomDoc = await db.Models.UnavailableRoom.findOne({ date: date });
     if (!unavailableRoomDoc) {
         // no data found
-        return null;
+        return [];
     }
 
     let availableRooms = [];
@@ -74,7 +107,7 @@ async function getListOfAvailableRooms(date, beginTime, timeToSpendInRoom) {
 
         // Si une salle est au moins une fois occupée dans la journée
         if (Object.keys(unavailableRoomDoc.rooms).includes(roomObj.label)) {
-            
+
             // On récupère les créneaux qui sont libres
 
             let unavailableSlots = unavailableRoomDoc.rooms[roomObj.label];
@@ -86,20 +119,28 @@ async function getListOfAvailableRooms(date, beginTime, timeToSpendInRoom) {
             for (slot of availableSlots) {
 
                 let [slotBeginTime, slotEndTime] = slot;
+
                 if (isTimeInferior(slotBeginTime, beginTime) && isTimeInferior(beginTime, slotEndTime)) {
 
                     if (timeToSpendInRoom == '') { // si temps d'utilisation dérisiré non précisé
-                        let obj = { label: roomObj.label, timeLimit: slotEndTime == '21:00' ? slotEndTime : null };
+                        let obj = { label: roomObj.label, timeLimit: slotEndTime != '21:00' ? slotEndTime : null };
                         availableRooms.push(obj);
                     }
-                    else {
-                        console.log("a");
+                    else { // SI timeToSpend précisé
+
+                        let isAvailableLongEnough = isRoomAvailableLongEnough(slotBeginTime, timeToSpendInRoom, slotEndTime);
+
+                        if (isAvailableLongEnough) {
+                            let obj = { label: roomObj.label, timeLimit: slotEndTime != '21:00' ? slotEndTime : null };
+                            availableRooms.push(obj);
+                            break;
+                        }
                     }
                 }
             }
         }
         else {
-            let obj = { label: roomObj.label, timeLimit: null }
+            let obj = { label: roomObj.label, timeLimit: null };
             availableRooms.push(obj);
         }
     }

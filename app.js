@@ -23,11 +23,12 @@ dbConnection.connectToMongoDB(URI);
 // Actions automatiques
 setInterval(automaticActions.keepHerokuAlive, 30 * 60 * 1000);
 setInterval(automaticActions.updateMarks , 15 * 60 * 1000);
-setInterval(automaticActions.notifyNextCourse , 15 * 60 * 1000);
-
+setInterval(automaticActions.notifyNextCourse , 15 * 60 * 1000); 
+setInterval(automaticActions.updatePlanning , 12 * 60 * 60 * 1000); // toutes les 12h
+setInterval(automaticActions.updateUnavailableRooms , 12 * 60 * 60 * 1000 + 30 *60 *1000); // toutes les 12h30
 
 // (async () => {
-//     await automaticActions.updateUnavailableRooms()
+//     await automaticActions.updatePlanning()
 // })()
 
 
@@ -74,7 +75,7 @@ app.use('/marks', routes.marks);
 app.use('/planning', routes.planning);
 app.use('/widget', routes.widget);
 app.use('/group', routes.group);
-app.post('/available-rooms', roomCtrl.getAvailableRoomsByUserPreferences)
+app.post('/available-rooms', mw.requireAvailableRoomReqParam, roomCtrl.getAvailableRoomsByUserPreferences)
 
 app.listen(port, function () {
     console.log(`Listening on Port ${port}`);
