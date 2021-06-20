@@ -16,6 +16,7 @@ Projet en cours de développement.
     1. [Récupération des Planning](#recup-planning)
     2. [Vérifier s'il y a des modifications dans un planning](#fetch-planning)
 4. [Notifications](#notifications)
+5. [Salles disponibles](#salles-dispo)
 
 Interroger le serveur : https://juniapocketapi.herokuapp.com
 
@@ -320,3 +321,35 @@ Status Code : `200` (OK) et en réponse : `{message: 'Preferences mises à jour 
 Status Code : `400` (Bad Request)
 
 Satus Code : `500` (Server Error)
+
+
+## Salles disponibles <a name="salles-dispo"></a>
+
+Requête : `POST`
+
+Route : `/available-rooms`
+
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
+Body de la requête : 
+
+```js
+  date: <string>
+  beginTime : <string>
+  timeToSpendInRoom: <string>
+```
+
+Comment définir ces valeurs : 
+
+* `date` : si on souhaite choisir la date du jour, envoyer une chaine de caractères vide. 
+Pour choisir un jour particulier, obligatoirement envoyer une date au format 'jj/mm/yyyy'
+
+* `beginTime` : envoyer une chaine de caractères vide pour rechercher une salle libre à partir
+de l'heure de la requête. Pour rechercher une salle à partir d'une heure particulière de
+la journée, envoyer une chaine au format 'HH:MM' (par exemple '12:01').
+
+* `timeToSpendInRoom` : Correspond au temps souhaité à utiliser la salle. Envoyer une chaine
+de caractères vide pour ne pas prendre en compte ce paramètre (ie qu'on considèrement une 
+salle comme disponible même si elle sera occupée dans 5 min). Pour définir un temps d'utilisation,
+envoyer une chaine au format `HH:MM`  (par exemple '02:15' pour une durée d'utilisation de 2h15
+de la salle au maximum).
