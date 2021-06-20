@@ -325,6 +325,10 @@ Satus Code : `500` (Server Error)
 
 ## Salles disponibles <a name="salles-dispo"></a>
 
+Recherche de salles disponibles en fonction d'une date, horaire, temps d'utilisation...
+
+********
+
 Requête : `POST`
 
 Route : `/available-rooms`
@@ -353,3 +357,5 @@ de caractères vide pour ne pas prendre en compte ce paramètre (ie qu'on consid
 salle comme disponible même si elle sera occupée dans 5 min). Pour définir un temps d'utilisation,
 envoyer une chaine au format `HH:MM`  (par exemple '02:15' pour une durée d'utilisation de 2h15
 de la salle au maximum).
+
+REMARQUE : plus il y aura d'utilisateurs à Junia Pocket, plus les informations seront fiables.
