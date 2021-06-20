@@ -346,11 +346,11 @@ Body de la requête :
 Comment définir ces valeurs : 
 
 * `date` : si on souhaite choisir la date du jour, envoyer une chaine de caractères vide. 
-Pour choisir un jour particulier, obligatoirement envoyer une date au format 'jj/mm/yyyy'
+Pour choisir un jour particulier, obligatoirement envoyer une date au format `jj/mm/yyyy`
 
 * `beginTime` : envoyer une chaine de caractères vide pour rechercher une salle libre à partir
 de l'heure de la requête. Pour rechercher une salle à partir d'une heure particulière de
-la journée, envoyer une chaine au format 'HH:MM' (par exemple '12:01').
+la journée, envoyer une chaine au format `HH:MM` (par exemple '12:01').
 
 * `timeToSpendInRoom` : Correspond au temps souhaité à utiliser la salle. Envoyer une chaine
 de caractères vide pour ne pas prendre en compte ce paramètre (ie qu'on considèrement une 
