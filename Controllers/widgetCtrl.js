@@ -67,7 +67,7 @@ exports.getWidget = async (req, res) => {
 exports.setPreferenceSizeWidget = async function (req, res) {
 
     if (!req.body.hasOwnProperty('widgetName') ||
-        !req.body.hasOwnProperty('widgetIsThere')) {
+        !req.body.hasOwnProperty('widgetSize')) {
         return res.status(sCode.badRequest).json({error: 'Au moins un paramètre manquant.'})
     }
     
