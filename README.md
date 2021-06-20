@@ -327,7 +327,7 @@ Satus Code : `500` (Server Error)
 
 Recherche de salles disponibles en fonction d'une date, horaire, temps d'utilisation...
 
-********
+### Requête à effectuer
 
 Requête : `POST`
 
@@ -338,9 +338,11 @@ A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
 Body de la requête : 
 
 ```js
+{
   date: <string>
   beginTime : <string>
   timeToSpendInRoom: <string>
+}
 ```
 
 Comment définir ces valeurs : 
@@ -358,4 +360,23 @@ salle comme disponible même si elle sera occupée dans 5 min). Pour définir un
 envoyer une chaine au format `HH:MM`  (par exemple '02:15' pour une durée d'utilisation de 2h15
 de la salle au maximum).
 
-REMARQUE : plus il y aura d'utilisateurs à Junia Pocket, plus les informations seront fiables.
+REMARQUES : 
+* Plus il y aura d'utilisateurs à Junia Pocket, plus les informations seront fiables.
+* On considère que les salles peuvent être disponibles de 8h à 21h uniquement. Au delà
+de cet intervalle, aucune salle n'est considérée comme libre.
+
+### Format de la réponse
+
+La réponse est une liste vide si aucune salle n'est disponible.
+
+Sinon, c'est une liste contenant des objets à la structure suivante :
+
+```js
+{
+  label: <room_label>
+  timeLimit: <value>
+}
+```
+
+Si la valeur de `timeLimit` est `null`, cela signifie que la salle est disponible jusque 21h.
+Sinon, c'est que la salle est réservée prochainement dans la journée et la valeur de `timeLimit` donne l'heure de la prochaine occupation au format `HH:MM`.

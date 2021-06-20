@@ -4,14 +4,14 @@ function getListAvailableSlots(listOfUsedSlots) {
     /**
      * On donne en argument la liste des créneaux utilisés pour une salle
      * et renvoie les créneaux libres pour cette salle (cf. exemple)
-     * On considère qu'une journée commence à 7h30 et finie à 21h.
+     * On considère qu'une journée commence à 8h et finie à 21h.
      * 
      * Exemple :
      * Entrée : [ [08:00, 10:00], [14:35, 15:30] ]
-     * Sortie : [ [07:30, 08:00], [10:00, 14:35], [15:30, 21:00] ]
+     * Sortie : [ [00:00, 08:00], [10:00, 14:35], [15:30, 21:00] ]
      */
 
-    let availableSlotsString = '07:30-';
+    let availableSlotsString = '08:00-';
     for (unavailableSlot of listOfUsedSlots) {
         availableSlotsString += `${unavailableSlot[0]}X${unavailableSlot[1]}-`
     }
@@ -89,6 +89,13 @@ async function getListOfAvailableRooms(date, beginTime, timeToSpendInRoom) {
         let dateNow = new Date();
         let jetlag = 2;
         beginTime = `${dateNow.getUTCHours() + jetlag}:${addZeroBefore(dateNow.getUTCMinutes())}`;
+    }
+
+    // Si on est pas entre 7h et 21h, pas de salle dispo
+    let beginHour = Number(beginTime.split(':')[0]);
+    console.log('hour:', beginHour)
+    if (beginHour < 8 || beginHour >= 21) {
+        return [];
     }
 
     // On récupère la liste des salles
