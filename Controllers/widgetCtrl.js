@@ -66,21 +66,81 @@ exports.getWidget = async (req, res) => {
 
 exports.setPreferenceSizeWidget = async function (req, res) {
 
+    if (!req.body.hasOwnProperty('widgetName') ||
+        !req.body.hasOwnProperty('widgetIsThere')) {
+        return res.status(sCode.badRequest).json({error: 'Au moins un paramètre manquant.'})
+    }
+    
     let aurionID = req.user.aurionID;
     let widgetName = req.body.widgetName;       // a verif dans MIDDLEWARE
     let widgetSize = req.body.widgetSize              // a verif dans MIDDLEWARE
 
     var pushObj = {};
-    pushObj[`widgetPreference.${widgetName}.size`] = { size: Number(widgetSize) };
+    pushObj[`widgetPreference.${widgetName}.size`] = Number(widgetSize);
     console.log('pushObj:', pushObj)
     await db.Models.Widget.updateOne({ aurionID: aurionID },
         {
-            $set: pushObj 
+            $set: pushObj
         },
         function (err, doc) {
             console.log(doc)
         })
 
         .then(console.log('updated!'));
-    res.send('');
+    res.status(sCode.OK).send('');
+}
+
+
+exports.setPreferenceIsThereWidget = async function (req, res) {
+
+    if (!req.body.hasOwnProperty('widgetName') ||
+        !req.body.hasOwnProperty('widgetIsThere')) {
+        return res.status(sCode.badRequest).json({error: 'Au moins un paramètre manquant.'})
+    }
+    
+    let aurionID = req.user.aurionID;
+    let widgetName = req.body.widgetName;       // a verif dans MIDDLEWARE
+    let widgetIsThere = req.body.widgetIsThere              // a verif dans MIDDLEWARE
+
+    var pushObj = {};
+    pushObj[`widgetPreference.${widgetName}.isThere`] = Boolean(widgetIsThere);
+    console.log('pushObj:', pushObj)
+    await db.Models.Widget.updateOne({ aurionID: aurionID },
+        {
+            $set: pushObj
+        },
+        function (err, doc) {
+            console.log(doc)
+        })
+
+        .then(console.log('updated!'));
+    res.status(sCode.OK).send('');
+}
+
+
+exports.setHabitsWidget = async function (req, res) {
+
+    if (!req.body.hasOwnProperty('widgetName') ) {
+        return res.status(sCode.badRequest).json({error: 'Au moins un paramètre manquant.'})
+    }
+    
+    let aurionID = req.user.aurionID;
+    let widgetName = req.body.widgetName;       // a verif dans MIDDLEWARE
+    let hour = new Date().getHours()
+
+    let doc = await db.Models.Widget.findOne({ aurionID: aurionID })
+    const oldValueHabits = doc.habits[hour][widgetName]
+
+    var pushObj = {};
+    pushObj[`habits.${hour}.${widgetName}`] = oldValueHabits + 1;
+    await db.Models.Widget.updateOne({ aurionID: aurionID },
+        {
+            $set: pushObj
+        },
+        function (err, doc) {
+            console.log(doc)
+        })
+
+        .then(console.log('updated!'));
+    res.status(sCode.OK).send('');
 }

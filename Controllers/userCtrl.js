@@ -187,7 +187,7 @@ exports.delete = async function (req, res)  {
     await db.Models.Group.updateMany({ "list": { $all: ["p64002"] } },
         {
             $pull: {
-                list: { $in: [aurionID] }
+                list: { $all: [aurionID] }
             }
         }).then(console.log(`delete --> ${aurionID} retiré de tous ses éventuels groupes!`));
     return res.status(sCode.OK).json({ message: `Utilisateur ${aurionID} désinscrit avec succès!` });
