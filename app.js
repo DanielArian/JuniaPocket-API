@@ -67,6 +67,9 @@ app.use('/user', routes.user);
 
 // L'accès aux chemins ci-dessous nécessite une authentification
 app.use(mw.auth);
+app.get('/get-aurionID', async (req, res) => {
+    res.status(200).json({aurionID: req.user.aurionID})
+});
 app.use('/marks', routes.marks);
 app.use('/planning', routes.planning);
 app.use('/widget', routes.widget);
