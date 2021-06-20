@@ -3,7 +3,6 @@ var router = express.Router();
 
 const mw = require('../Middlewares/index');
 const userCtrl = require('../Controllers/userCtrl');
-const groupCtrl = require('../Controllers/groupCtrl');
 
 router.post('/signup', mw.requireSignupParam, mw.requireUserNotAlreadyRegistered, userCtrl.signup);
 router.post('/login', mw.requireLoginParam, userCtrl.login);
@@ -13,7 +12,6 @@ router.get('/list', userCtrl.getList);
 router.get('/delete', userCtrl.delete);
 router.post('/change-jpocket-password', userCtrl.changeJpocketPassword);
 router.post('/change-aurion-login-credentials', mw.requireAurionLoginCred, userCtrl.changeAurionLoginCred);
-router.post('/create-group', groupCtrl.createGroup);
 router.post('/preferences/notifications', mw.requireNotifPrefParam, userCtrl.setNotificationsPreferences);
 
 module.exports = router;

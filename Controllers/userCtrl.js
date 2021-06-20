@@ -43,11 +43,16 @@ exports.signup = async (req, res, next) => {
 
     // Sauvegarde de l'utilisateur dans la Database
     // Et sauvegarde d'un doc de notification de préférence vide
+    // Et sauvegarde d'un doc de widget avec les préférences et valeurs par défaut
     // dans la collection 'notificationPreferences'
     try {
         let userDoc = db.manageUser.createUserDocument(aurionID, aurionPassword, newJpocketHashedPass, realName);
-        db.save.saveDoc(userDoc);
+        await db.save.saveDoc(userDoc);
         db.manageNotifPreferences.saveEmptyNotifPreferencesDoc(aurionID);
+
+        let initWidgetDoc = db.manageWidget.createWidgetDocument(aurionID);
+        await db.save.saveDoc(initWidgetDoc);
+
         return res.status(sCode.created).json({ message: `Utilisateur créé` })
     } catch (error) {
         console.log(`signup error --> ${error}.`);

@@ -69,6 +69,7 @@ app.use('/user', routes.user);
 app.use(mw.auth);
 app.use('/marks', routes.marks);
 app.use('/planning', routes.planning);
+app.use('/widget', routes.widget);
 app.post('/available-rooms', roomCtrl.getAvailableRoomsByUserPreferences)
 
 app.listen(port, function () {
