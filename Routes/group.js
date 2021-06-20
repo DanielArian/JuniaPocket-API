@@ -4,7 +4,6 @@ var router = express.Router();
 const groupCtrl = require('../Controllers/groupCtrl');
 const mw = require('../Middlewares/index');
 
-router.use(mw.auth);
 router.get('/get', groupCtrl.getUserGroups);
 
 // AJOUTER ICI UN MIDDLEWARE POUR VERIF QUE LE GROUP ID EST BIEN FOURNI, sinon BAD REQUEST

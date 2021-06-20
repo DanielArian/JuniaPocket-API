@@ -39,6 +39,13 @@ exports.getUserGroups = async function (req, res) {
 }
 
 
+exports.joinGroup = async function (req, res) {
+
+    
+}
+
+
+
 exports.leaveGroup = async function (req, res) {
 
     let aurionID = req.user.aurionID;       // assuré par auth.js
