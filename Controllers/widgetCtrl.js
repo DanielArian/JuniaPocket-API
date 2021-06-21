@@ -144,3 +144,14 @@ exports.setHabitsWidget = async function (req, res) {
         .then(console.log('updated!'));
     res.status(sCode.OK).send('');
 }
+
+
+exports.getHiddenWidgets = async function (req, res) {
+
+    let aurionID = req.user.aurionID;
+    let array = await db.manageWidget.getFalseWidget(aurionID);
+    if (array == 'ERROR') {
+        return res.status(sCode.serverError).send('');
+    }
+    return res.status(sCode.OK).send(JSON.stringify(array));;
+}

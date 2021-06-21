@@ -73,3 +73,42 @@ exports.saveWidget = function (doc) {
         return true;
     });
 }
+
+
+function findFalseWidget(preferenceArray) {
+    const printableArrayWidget = []
+    for (let i in preferenceArray) {
+        preferenceArray[i].isThere == false ? printableArrayWidget.push(i) : null
+    }
+    return printableArrayWidget;
+}
+
+async function getFalseWidgetDoc(studentAurionID) {
+    return new Promise((resolve, reject) => {
+        try {
+            const doc = db.Models.Widget.findOne({ aurionID: studentAurionID });
+            if (doc == null) {
+                console.log(`L\'étudiant ${aurionID} n'est PAS présent dans la collection "marks".`)
+            }
+            console.log(`Liste des widgets de l'étudiant ${studentAurionID} récupéré dans la collection "widgets".`)
+            resolve(doc);
+
+        }
+        catch (error) {
+            console.log(`getWidgetDoc error --> ${error}`);
+            reject('ERROR');
+        }
+    });
+}
+
+exports.getFalseWidget = async function (studentAurionID) {
+    try {
+        let doc = await getFalseWidgetDoc(studentAurionID);
+        if (doc == null) return [];
+        if (doc == 'ERROR') return 'ERROR';
+        else return findFalseWidget(doc.widgetPreference);
+    } catch (error) {
+        console.log(`getWidget error --> ${error}`);
+        return 'ERROR';
+    }
+}

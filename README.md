@@ -355,7 +355,7 @@ de l'heure de la requête. Pour rechercher une salle à partir d'une heure parti
 la journée, envoyer une chaine au format `HH:MM` (par exemple '12:01').
 
 * `timeToSpendInRoom` : Correspond au temps souhaité pour utiliser la salle. Envoyer une chaine
-de caractères vide pour ne pas prendre en compte ce paramètre (ie qu'on considèrement une 
+de caractères vide pour ne pas prendre en compte ce paramètre (ie qu'on considèrera une 
 salle comme disponible même si elle sera occupée dans 5 min). Pour définir un temps d'utilisation,
 envoyer une chaine au format `HH:MM`  (par exemple '02:15' pour une durée d'utilisation de 2h15
 de la salle au maximum).
