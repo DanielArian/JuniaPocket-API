@@ -1,10 +1,10 @@
 const db = require('../Database/index');
 const sCode = require('../httpStatus');
+const mongoose = require('mongoose');
 
 exports.getAvailableRoomsByUserPreferences = async (req, res) => {
 
     /**
-     * PENSER A AJOUTER MIDDLEWARE POUR CONTROLLER LES FORMATS
      * 
      * Renvoie les sales dispo en fonction de !
      *  - une date 
@@ -23,4 +23,28 @@ exports.getAvailableRoomsByUserPreferences = async (req, res) => {
         console.log(`getAvailableRoomsByUserPreferences error --> ^${error}`);
         return res.status(sCode.serverError).json({ error });
     }
+}
+
+exports.getUserFavoriteRooms = async function (req, res) {
+
+    let aurionID = req.user.aurionID;
+    
+    res.set('Content-Type', 'application/json');
+    var doc = await db.Models.FavoriteRoom.findOne({ aurionID: aurionID });
+    if (doc == null) {
+        const docCreate = new db.Models.FavoriteRoom({
+            _id: new mongoose.Types.ObjectId(),
+            aurionID: aurionID,
+            list: req.body.list,
+        },
+            { collection: 'favoriteroom' });
+        doc = docCreate
+    } else {
+        doc.list = req.body.list;
+    }
+
+    doc.save(function (err, doc) {
+        if (err) return console.error(err);
+    });
+    res.status(200).send("Ajout Ã  la bdd ok");
 }

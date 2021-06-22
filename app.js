@@ -75,7 +75,7 @@ app.use('/marks', routes.marks);
 app.use('/planning', routes.planning);
 app.use('/widget', routes.widget);
 app.use('/group', routes.group);
-app.post('/available-rooms', mw.requireAvailableRoomReqParam, roomCtrl.getAvailableRoomsByUserPreferences)
+app.use('/rooms', routes.rooms);
 
 app.listen(port, function () {
     console.log(`Listening on Port ${port}`);

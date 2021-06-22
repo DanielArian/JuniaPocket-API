@@ -6,3 +6,4 @@ exports.Room = require('./room');
 exports.UnavailableRoom = require('./unavailableRoomSchema');
 exports.Group = require('./group');
 exports.Widget = require('./widget');
+exports.FavoriteRoom = require('./favoriteRoom');
