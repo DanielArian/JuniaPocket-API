@@ -130,7 +130,7 @@ async function getListOfAvailableRooms(date, beginTime, timeToSpendInRoom) {
                 if (isTimeInferior(slotBeginTime, beginTime) && isTimeInferior(beginTime, slotEndTime)) {
 
                     if (timeToSpendInRoom == '') { // si temps d'utilisation dérisiré non précisé
-                        let obj = { label: roomObj.label, timeLimit: slotEndTime != '21:00' ? slotEndTime : null };
+                        let obj = { label: roomObj.label, location: roomObj.location, timeLimit: slotEndTime != '21:00' ? slotEndTime : null };
                         availableRooms.push(obj);
                     }
                     else { // SI timeToSpend précisé
@@ -138,7 +138,7 @@ async function getListOfAvailableRooms(date, beginTime, timeToSpendInRoom) {
                         let isAvailableLongEnough = isRoomAvailableLongEnough(slotBeginTime, timeToSpendInRoom, slotEndTime);
 
                         if (isAvailableLongEnough) {
-                            let obj = { label: roomObj.label, timeLimit: slotEndTime != '21:00' ? slotEndTime : null };
+                            let obj = { label: roomObj.label, location: roomObj.location, timeLimit: slotEndTime != '21:00' ? slotEndTime : null };
                             availableRooms.push(obj);
                             break;
                         }
@@ -147,7 +147,7 @@ async function getListOfAvailableRooms(date, beginTime, timeToSpendInRoom) {
             }
         }
         else {
-            let obj = { label: roomObj.label, timeLimit: null };
+            let obj = { label: roomObj.label, location: roomObj.location, timeLimit: null };
             availableRooms.push(obj);
         }
     }

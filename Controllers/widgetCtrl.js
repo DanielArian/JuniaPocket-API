@@ -126,7 +126,7 @@ exports.setHabitsWidget = async function (req, res) {
     
     let aurionID = req.user.aurionID;
     let widgetName = req.body.widgetName;       // a verif dans MIDDLEWARE
-    let hour = new Date().getHours()
+    let hour = new Date().getUTCHours() + 2;
 
     let doc = await db.Models.Widget.findOne({ aurionID: aurionID })
     const oldValueHabits = doc.habits[hour][widgetName]
