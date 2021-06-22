@@ -12,10 +12,6 @@ exports.getAvailableRoomsByUserPreferences = async (req, res) => {
      *  - temps occupation (format : 'HH:MM') (si '' = par défaut : on renvoie les salles même si elles sont prises dans 5 min par ex)
      */
 
-    // let date = '07/06/2021';
-    // let beginTime = '13:30';
-    // let timeToSpendInRoom = '';
-
     let date = req.body.date;
     let beginTime = req.body.beginTime;
     let timeToSpendInRoom = req.body.timeToSpendInRoom;
@@ -25,8 +21,6 @@ exports.getAvailableRoomsByUserPreferences = async (req, res) => {
         return res.status(sCode.OK).send(JSON.stringify(r));
     } catch (error) {
         console.log(`getAvailableRoomsByUserPreferences error --> ^${error}`);
-        return res.status(sCode.serverError).json({error: 'SERVER_ERROR'});
+        return res.status(sCode.serverError).json({ error });
     }
-    
-
 }

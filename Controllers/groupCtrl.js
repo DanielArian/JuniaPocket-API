@@ -18,8 +18,9 @@ exports.createGroup = async function (req, res) {
         db.save.saveDoc(doc)
     } catch (error) {
         console.log(`createGroup error --> ${error}`);
+        res.status(sCode.serverError).json({error});
     }
-    res.status(sCode.created).json({message: 'Group créé !'})
+    res.status(sCode.created).json({message: 'Groupe créé !'})
 }
 
 
@@ -32,7 +33,7 @@ exports.getUserGroups = async function (req, res) {
         var liste = await db.Models.Group.find();
     } catch (error) {
         console.log(`getUserGroups error --> ${error}`);
-        return res.status(sCode.serverError).json({ error: 'SERVER_ERROR' });
+        return res.status(sCode.serverError).json({ error });
     }
     var clearList = liste.filter(item => item.list.includes(aurionID));
     console.log(clearList);
@@ -55,11 +56,11 @@ exports.joinGroup = async function (req, res) {
         groupDoc = await db.Models.Group.findOne({'_id': mongoose.Types.ObjectId(groupID)})
     } catch (error) {
         console.log(`joinGroup error --> ${error}`);
-        return res.status(sCode.serverError).json({ error: 'SERVER_ERROR' });
+        return res.status(sCode.serverError).json({ error });
     }
 
     if (groupDoc.list.includes(aurionIDToAdd)) {
-        return res.status(sCode.conflict).json({message: "L'utilisateur est déjà dans ce groupe."});
+        return res.status(sCode.conflict).json({message: "UTILISATEUR_DEJA_INSCRIT_DANS_LE_GROUPE"});
     }
 
 
@@ -70,7 +71,7 @@ exports.joinGroup = async function (req, res) {
         return res.status(200).json({message: 'Utilisateur ajouté avec succès'});
     } catch (error) {
         console.log(`joinGroup error --> ${error}`);
-        return res.status(sCode.serverError).json({ error: 'SERVER_ERROR' });
+        return res.status(sCode.serverError).json({ error });
     }
 }
 
@@ -92,6 +93,6 @@ exports.leaveGroup = async function (req, res) {
         return res.status(200).json({message: 'Suppression ok'});
     } catch (error) {
         console.log(`leaveGroup error --> ${error}`);
-        return res.status(sCode.serverError).json({ error: 'SERVER_ERROR' });
+        return res.status(sCode.serverError).json({ error });
     }
 }

@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; // Authorization: 'Bearer TOKEN'
         if (!token) {
-            res.status(sCode.unauthorized).json({ isValid: false, error: 'Echec authentification !' });
+            res.status(sCode.unauthorized).json({ isValid: false, error: 'ECHEC_AUTHENTIFICATION' });
         }
         const verified = jwt.verify(token, process.env.JWT_SECRET || config.JWTSecret);
         req.user = verified;
@@ -22,6 +22,6 @@ module.exports = async (req, res) => {
         res.status(sCode.OK).json({ isValid: true, user: req.user.aurionID });
     } catch (error) {
         console.log(`isTokenValid --> ${error}`);
-        res.status(sCode.badRequest).json({ isValid: false, error: 'Token invalide !' });
+        res.status(sCode.badRequest).json({ isValid: false, error: 'TOKEN_INVALIDE' });
     };
 };

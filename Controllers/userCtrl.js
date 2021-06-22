@@ -69,7 +69,7 @@ exports.login = async (req, res, next) => {
     try {
         let result = await db.search.findUserByAurionIDInCollection(req.body.aurionID, db.Models.User);
         if (result == 'USER_DOES_NOT_EXIST_IN_COLLECTION') {
-            return res.status(sCode.unauthorized).json({ error: 'Utilisateur non trouvé !' });
+            return res.status(sCode.unauthorized).json({ error: 'UTILISATEUR_NON_TROUVE' });
         }
         if (result == 'ERROR') {
             return res.status(sCode.serverError).json({ error });
@@ -83,7 +83,7 @@ exports.login = async (req, res, next) => {
     try {
         let result = await bcrypt.compare(req.body.jpocketPassword, userDoc.jpocketPassword);
         if (!result) {
-            return res.status(sCode.unauthorized).json({ error: 'Mot de passe incorrect !' });
+            return res.status(sCode.unauthorized).json({ error: 'MOT_DE_PASSE_INCORRECT' });
         }
         // Connexion réussie : on envoie un token JWT
         const payload = {
@@ -201,5 +201,5 @@ exports.setNotificationsPreferences = async function (req, res) {
     if (db.manageNotifPreferences.setPreferences(aurionID, PSID, mail)) {
         return res.status(sCode.OK).json({ message: 'Preferences mises à jour !' })
     }
-    return res.status(sCode.serverError).json({ error: 'Server Error' });
+    return res.status(sCode.serverError).json({ error });
 }
