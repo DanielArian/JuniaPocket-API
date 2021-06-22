@@ -25,7 +25,7 @@ exports.getAvailableRoomsByUserPreferences = async (req, res) => {
     }
 }
 
-exports.getUserFavoriteRooms = async function (req, res) {
+exports.sendUserFavoritesToDatabase = async function (req, res) {
 
     let aurionID = req.user.aurionID;
     
@@ -48,3 +48,14 @@ exports.getUserFavoriteRooms = async function (req, res) {
     });
     res.status(200).send("Ajout Ã  la bdd ok");
 }
+
+
+exports.getUserFavoriteRoom  = async function (req, res) {
+    
+    let aurionID = req.user.aurionID;
+
+    res.set('Content-Type', 'application/json');
+    const liste = await db.Models.FavoriteRoom.find({ aurionID: aurionID}).exec();
+    // console.log(liste)
+    res.status(200).send(liste);
+  }
