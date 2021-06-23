@@ -1,4 +1,5 @@
 const db = require('./index');
+const lodash = require('lodash');
 
 function getListAvailableSlots(listOfUsedSlots) {
     /**
@@ -9,6 +10,8 @@ function getListAvailableSlots(listOfUsedSlots) {
      * Exemple :
      * Entrée : [ [08:00, 10:00], [14:35, 15:30] ]
      * Sortie : [ [00:00, 08:00], [10:00, 14:35], [15:30, 21:00] ]
+     * 
+     * @param {Array} listOfUsedSlots - liste de créneaux
      */
 
     let availableSlotsString = '08:00-';
@@ -20,7 +23,9 @@ function getListAvailableSlots(listOfUsedSlots) {
     let availableSlots = []
 
     for (slot of availableSlotsString.split('X')) {
-        availableSlots.push(slot.split('-'));
+        let [beginTime, endTime] = slot.split('-');
+        // Ligne suivante pour contrer cet exemple: si le cours commence à 8:00, on aurait [08:00, 08:00]
+        if (beginTime != endTime) availableSlots.push([beginTime, endTime]);
     }
     console.log()
     return availableSlots;
@@ -32,7 +37,8 @@ function isTimeInferior(timeA, timeB) {
      * Renvoie true    si timeA <= timeB
      *         false   sinon
      * 
-     * timeA = 'HH:MM'
+     * @param {String} timeA - 'HH:MM'
+     * @param {String} timeB - 'HH:MM'
      */
 
     let timeAstr = timeA.split(':')[0] + timeA.split(':')[1];
@@ -42,7 +48,12 @@ function isTimeInferior(timeA, timeB) {
 }
 
 function addZeroBefore(n) {
-    ///
+    /**
+     * Si un seul chiffre, rajoute un zéro devant
+     *  2 --> 02
+     *  03 --> 03
+     *  22 --> 22
+     */
     return (n < 10 ? '0' : '') + n;
 }
 
@@ -155,11 +166,16 @@ async function getListOfAvailableRooms(date, beginTime, timeToSpendInRoom) {
     return availableRooms;
 }
 
+
+
+
 module.exports = {
+    getListAvailableSlots,
     getListOfAvailableRooms
 }
 
 // // TEST UNIT
+
 // console.log(isTimeInferior('08:00', '07:59'))
 // console.log(isTimeInferior('08:00', '08:00'))
 // console.log(isTimeInferior('08:00', '22:59'))

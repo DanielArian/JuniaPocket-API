@@ -17,6 +17,7 @@ Projet en cours de développement.
     2. [Vérifier s'il y a des modifications dans un planning](#fetch-planning)
 4. [Notifications](#notifications)
 5. [Salles disponibles](#salles-dispo)
+6. [Recherche créneaux commun emploi du temps](#creaneaux-communs)
 
 Interroger le serveur : https://juniapocketapi.herokuapp.com
 
@@ -380,3 +381,19 @@ Sinon, c'est une liste contenant des objets à la structure suivante :
 
 Si la valeur de `timeLimit` est `null`, cela signifie que la salle est disponible jusque 21h.
 Sinon, c'est que la salle est réservée prochainement dans la journée et la valeur de `timeLimit` donne l'heure de la prochaine occupation au format `HH:MM`.
+
+## Recherche créneaux commun dans l'emploi du temps
+
+### Requête à effectuer
+
+`POST /planning/get-common-availability`
+
+Header : Bearer token
+
+Body : 
+`̀ ̀`js
+{
+    "aurionIDList": [],
+    "date": ""
+}
+```

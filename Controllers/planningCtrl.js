@@ -1,5 +1,7 @@
-const sCode = require('../httpStatus');
+const axios = require('axios');
+const mongoose = require('mongoose');
 
+const sCode = require('../httpStatus');
 const db = require('../Database/index');
 const aurionScrapper = require('../AurionScrapperCore/index');
 const { getAurionPassword } = require('../Database/manageUser');
@@ -153,4 +155,28 @@ exports.updateWeek = async (req, res) => {
         console.log(error);
         return res.status(sCode.serverError).send(JSON.stringify(error));
     }
+}
+
+
+exports.getCommonAvailableTimeSlots = async (req, res) => {
+
+    let groupID = req.body.groupID;
+    let date = req.body.date;
+
+    let groupDoc = await db.Models.Group.findOne({'_id': mongoose.Types.ObjectId(groupID)});
+    let listOfAurionID = groupDoc.list;
+
+    for (aurionID of listOfAurionID) {
+        let result = await db.managePlanning.findWeekPlanningFromDate(aurionID, date);
+        if (result == null) {
+            let dataToSend = {
+                aurionID: aurionID,
+                date: date
+            }
+            axios.post(`https://juniapocketapi.herokuapp.com/planning/get-week`, dataToSend)
+                .then('getCommonAvailableTimeSlots --> request sent');
+        }
+    }
+    let obj = await db.managePlanning.getCommonAvailableTimeSlots(listOfAurionID, date);
+    return res.status(sCode.OK).send(JSON.stringify(obj));
 }

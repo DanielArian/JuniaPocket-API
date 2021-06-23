@@ -6,7 +6,7 @@ const routes = require('./Routes/index');
 const mw = require('./Middlewares/index');
 const automaticActions = require('./automaticActions');
 
-const roomCtrl = require('./Controllers/roomCtrl');
+const db = require('./Database/index');
 
 const isTokenValidCtrl = require('./Controllers/isTokenValid');
 
@@ -26,10 +26,6 @@ setInterval(automaticActions.updateMarks , 15 * 60 * 1000);
 setInterval(automaticActions.notifyNextCourse , 15 * 60 * 1000); 
 setInterval(automaticActions.updatePlanning , 12 * 60 * 60 * 1000); // toutes les 12h
 setInterval(automaticActions.updateUnavailableRooms , 12 * 60 * 60 * 1000 + 30 *60 *1000); // toutes les 12h30
-
-// (async () => {
-//     await automaticActions.updatePlanning()
-// })()
 
 
 // Launch and config server

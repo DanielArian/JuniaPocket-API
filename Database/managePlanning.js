@@ -209,6 +209,134 @@ function getListOfModifiedDays(oldWeek, updatedWeek) {
     return listOfModifiedDays;
 }
 
+function addZeroBefore(n) {
+    /**
+     * Si un seul chiffre, rajoute un zéro devant
+     *  2 --> 02
+     *  03 --> 03
+     *  22 --> 22
+     */
+    return (n < 10 ? '0' : '') + n;
+}
+
+function intersection(slotsA, slotsB) {
+    /**
+     * Trouve l'intersection de deux listes de créneaux.
+     * Par exemple: 
+     * slotsA = [[8, 12], [17, 22]]
+     * slotsB = [[5, 11], [14, 18], [20, 23]]
+     * output = [[8, 11], [17, 18], [20, 22]]
+     * 
+     * @param {Array} slotsA
+     * @param {Array} slotsB
+     */
+
+    const targetSlot = (slotsA.length >= slotsB.lengh ? slotsA : slotsB);
+    const restSlot = (targetSlot == slotsA ? slotsB : slotsA);
+    const foundItersections = targetSlot.map(tu=> { 
+       const mwminmax = restSlot.map(ru => {
+            const startMax = (tu[0]>=ru[0] ? tu[0] : ru[0])
+            const endMin =(tu[1]<=ru[1] ? tu[1] : ru[1])
+            if(startMax<endMin){
+                const retarr = [].concat(startMax,endMin)
+                return retarr;
+            }
+            else return;
+        })
+        const filteredmwminmax = mwminmax.filter(x=>x!==undefined)
+        return filteredmwminmax; 
+    })
+    return lodash.flatten(foundItersections);
+}
+
+
+function getSeconds(timeHHMM) {
+    /**
+     * @param {Number} timeHHMM - 'HH:MM'
+     * 
+     * Renvoie le nombre de secondes écoulées depuis minuit.
+     */
+
+    return Number(timeHHMM.split(':')[0] * 3600 + timeHHMM.split(':')[1] * 60);
+}
+
+
+function getTime(seconds) {
+    /**
+     * @param {Number} seconds 
+     * Renvoie l'heure en fonction du nombre de secondes écoulées depuis munuit du même jour
+     */
+    let hour = Math.floor(seconds / 3600);
+    let min = (seconds % 3600) / 60;
+    return `${addZeroBefore(hour)}:${addZeroBefore(min)}`;
+}
+
+
+function convertListOfTimeSlotsToSeconds(listTimeSlots) {
+    /**
+     * entrée = [[ '12:00', '13:30' ], [ '17:30', '21:00' ]]
+     * sortie : [[ 43200, 48600 ], [ 36000, 75600 ]]
+     */
+
+    convertedSlots = []
+    listTimeSlots.forEach(slot => {
+        convertedSlots.push([getSeconds(slot[0]), getSeconds(slot[1])])
+    })
+    return convertedSlots;
+}
+
+
+function undoListOfTimesSlotsConversionToSeconds(listTimeSlots) {
+
+    convertedSlots = []
+    listTimeSlots.forEach(slot => {
+        convertedSlots.push([getTime(slot[0]), getTime(slot[1])])
+    })
+    return convertedSlots;
+}
+
+
+async function getCommonAvailableTimeSlots(listOfAurionID, date) {
+
+    // get available time slots for each user
+    let userPlanning;
+    let daySlot = [[getSeconds('00:00'), getSeconds('23:59')]];
+    let userSlotsForTheWeek = [];   // available Time Slots
+    for (aurionID of listOfAurionID) {
+        userPlanning = await db.managePlanning.findWeekPlanningFromDate(aurionID, date);
+        let daysEvent = Object.values(userPlanning.days);
+        let availableSlotsByDay = [];
+        for (day of daysEvent) {
+            let usedTimeSlots = []
+            day.forEach(event => {
+                usedTimeSlots.push([event.startTime, event.endTime])
+            })
+            let availableSlots = db.manageRoom.getListAvailableSlots(usedTimeSlots);
+            availableSlotsByDay.push(availableSlots);
+        }
+        userSlotsForTheWeek.push(availableSlotsByDay);
+    }
+    // intersect planning
+    let availableAllDay = [[getSeconds('00:00'), getSeconds('23:59')]];
+    let commonAvailabilityForWeekInSeconds = [availableAllDay, availableAllDay, availableAllDay, availableAllDay, availableAllDay, availableAllDay]
+
+    for (let dayNb = 0; dayNb < 6; dayNb++) {
+        for (userSlots of userSlotsForTheWeek) {
+
+            let userSlotsOfDayInSeconds = convertListOfTimeSlotsToSeconds(userSlots[dayNb]);
+            commonAvailabilityForWeekInSeconds[dayNb] = intersection(commonAvailabilityForWeekInSeconds[dayNb], userSlotsOfDayInSeconds)
+        }
+    }
+    // generate response object
+    let listofDaysDate = Object.keys(userPlanning.days);
+    let obj = {};
+    for (let dayNb = 0; dayNb < 6; dayNb++) {
+        obj[listofDaysDate[dayNb]] = undoListOfTimesSlotsConversionToSeconds(commonAvailabilityForWeekInSeconds[dayNb]);
+    }
+
+    return obj;
+}
+
 
 module.exports = {
     convertDateStringToUTCDate,
@@ -217,5 +345,6 @@ module.exports = {
     getWeeks,
     addWeekToPlanningDoc,
     findWeekPlanningFromDate,
-    getListOfModifiedDays
+    getListOfModifiedDays,
+    getCommonAvailableTimeSlots
 }
