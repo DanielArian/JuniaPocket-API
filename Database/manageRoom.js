@@ -42,6 +42,7 @@ function isTimeInferior(timeA, timeB) {
 }
 
 function addZeroBefore(n) {
+    ///
     return (n < 10 ? '0' : '') + n;
 }
 
