@@ -39,6 +39,6 @@ router.post('/send', async function (req, res) {
         if (err) return console.error(err);
     });
     res.status(200).send("Ajout Ã  la bdd ok");
-})
+});
 
 module.exports = router;

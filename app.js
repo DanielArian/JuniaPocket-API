@@ -72,6 +72,7 @@ app.use('/planning', routes.planning);
 app.use('/widget', routes.widget);
 app.use('/group', routes.group);
 app.use('/rooms', routes.rooms);
+app.use('/news', routes.news);
 
 app.listen(port, function () {
     console.log(`Listening on Port ${port}`);

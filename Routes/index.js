@@ -5,3 +5,4 @@ exports.user = require('./user');
 exports.widget = require('./widget');
 exports.group = require('./group');
 exports.rooms = require('./rooms');
+exports.news = require('./news');
