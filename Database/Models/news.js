@@ -7,4 +7,5 @@ var NewsSchem = new mongoose.Schema({
     date : Date,
     dest : [String]
 });
-const News = mongoose.model('News',NewsSchem);
+
+module.exports = mongoose.model('News', NewsSchem);

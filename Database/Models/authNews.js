@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 var AuthNewsSchem = new mongoose.Schema({
-    list : [String]
-  });
-  const AuthNews = mongoose.model('AuthNews',AuthNewsSchem);
+  list: [String]
+});
+
+module.exports = mongoose.model('AuthNews', AuthNewsSchem);

@@ -5,7 +5,7 @@ const mw = require('../Middlewares/index');
 const db = require('../Database/index');
 const mongoose = require('mongoose');
 
-router.get('/news/get', async function (req, res) {
+router.get('/get', async function (req, res) {
     res.set('Content-Type', 'application/json');
     const newsList = await db.Models.News.find().exec();
     res.status(200).send(newsList);
@@ -25,7 +25,7 @@ router.post('/send', async function (req, res) {
     res.set('Content-Type', 'application/json');
     let aurionID = req.user.aurionID;
     let userDoc = await db.Models.User.findOne({aurionID: aurionID});
-    let name = userDoc.realname;
+    let name = userDoc.name;
     const doc = new News({
         _id: new mongoose.Types.ObjectId(),
         auteur: name,

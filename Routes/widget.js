@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var parser = require('rss-parser');
+var Parser = require('rss-parser');
 
 const widgetCtrl = require('../Controllers/widgetCtrl')
 
@@ -19,6 +19,6 @@ router.get('/news', async function (req, res) {
     const entry = feed.items[Math.floor(Math.random() * feed.items.length)];
     const output = [feed.title, entry];
     res.status(200).send(output);
-})
+});
 
 module.exports = router;
