@@ -1,7 +1,58 @@
 const db = require('../Database/index');
 const sCode = require('../httpStatus');
 
-function getOrderWidget(preferenceArray, habitsArray) {
+function sum(tableau) {
+    let count = 0
+
+    if (tableau == null) {
+        return count
+    }
+    else {
+        for (let i = 0; i < tableau.length; i++) {
+            count += tableau[i][1]
+        }
+        return count
+    }
+}
+
+
+function holeFinderHook(printableArrayWidget, column) {
+    let count = sum(printableArrayWidget)
+    let i = 0
+    let pos = 0
+    if (column == 3) {
+        while (i < printableArrayWidget.length) {
+            pos += printableArrayWidget[i][1]
+            if (printableArrayWidget[i][1] == 2 && ((pos - 1) == 9 || (pos - 1) == 3 || (pos - 1) == 6 || (pos - 1) == 12 || (pos - 1) == 15)) {
+                printableArrayWidget.splice(i, 0, ['news', 1])
+                pos = 0
+                i = 0
+                count = sum(printableArrayWidget)
+            }
+            else {
+                i++
+            }
+        }
+    }
+    if (column == 2) {
+        while (i < printableArrayWidget.length) {
+            pos += printableArrayWidget[i][1]
+            if (printableArrayWidget[i][1] == 2 && ((pos - 1) == 2 || (pos - 1) == 4 || (pos - 1) == 6 || (pos - 1) == 8 || (pos - 1) == 10)) {
+                printableArrayWidget.splice(i, 0, ['news', 1])
+                pos = 0
+                i = 0
+                count = sum(printableArrayWidget)
+            }
+            else {
+                i++
+            }
+        }
+    }
+    return printableArrayWidget;
+}
+
+
+function getOrderWidget(preferenceArray, habitsArray, column) {
 
     // Extraction des habitudes de l'utilsateur + trie 
     const sortableArrayHabits = Object.entries(habitsArray).sort(([, a], [, b]) => b - a);
@@ -18,8 +69,11 @@ function getOrderWidget(preferenceArray, habitsArray) {
         item.isThere == true ? printableArrayWidget[printableArrayWidget.indexOf(element)] = [printableArrayWidget[printableArrayWidget.indexOf(element)], item.size] : null
     }
 
-    return printableArrayWidget;
+    let holeFinder = holeFinderHook(printableArrayWidget, column);
+    return holeFinder;
 }
+
+
 
 async function getWidgetDoc(studentAurionID) {
 
@@ -44,6 +98,7 @@ async function getWidgetDoc(studentAurionID) {
 exports.getWidget = async (req, res) => {
 
     let studentAurionID = req.user.aurionID;
+    let column = req.body.column;
 
     let PrintableList;
     try {
@@ -54,7 +109,7 @@ exports.getWidget = async (req, res) => {
         if (doc == 'ERROR') {
             return res.status(sCode.serverError).json({ error: 'SERVER_ERROR' });
         }
-        PrintableList = getOrderWidget(doc.widgetPreference, doc.habits[new Date().getHours()]);
+        PrintableList = getOrderWidget(doc.widgetPreference, doc.habits[new Date().getHours()], column);
         return res.status(sCode.OK).send(JSON.stringify(PrintableList));
 
     } catch (error) {
@@ -68,9 +123,9 @@ exports.setPreferenceSizeWidget = async function (req, res) {
 
     if (!req.body.hasOwnProperty('widgetName') ||
         !req.body.hasOwnProperty('widgetSize')) {
-        return res.status(sCode.badRequest).json({error: 'Au moins un paramètre manquant.'})
+        return res.status(sCode.badRequest).json({ error: 'Au moins un paramètre manquant.' })
     }
-    
+
     let aurionID = req.user.aurionID;
     let widgetName = req.body.widgetName;       // a verif dans MIDDLEWARE
     let widgetSize = req.body.widgetSize              // a verif dans MIDDLEWARE
@@ -95,9 +150,9 @@ exports.setPreferenceIsThereWidget = async function (req, res) {
 
     if (!req.body.hasOwnProperty('widgetName') ||
         !req.body.hasOwnProperty('widgetIsThere')) {
-        return res.status(sCode.badRequest).json({error: 'Au moins un paramètre manquant.'})
+        return res.status(sCode.badRequest).json({ error: 'Au moins un paramètre manquant.' })
     }
-    
+
     let aurionID = req.user.aurionID;
     let widgetName = req.body.widgetName;       // a verif dans MIDDLEWARE
     let widgetIsThere = req.body.widgetIsThere              // a verif dans MIDDLEWARE
@@ -120,14 +175,14 @@ exports.setPreferenceIsThereWidget = async function (req, res) {
 
 exports.setHabitsWidget = async function (req, res) {
 
-    if (!req.body.hasOwnProperty('widgetName') ) {
-        return res.status(sCode.badRequest).json({error: 'Au moins un paramètre manquant.'})
+    if (!req.body.hasOwnProperty('widgetName')) {
+        return res.status(sCode.badRequest).json({ error: 'Au moins un paramètre manquant.' })
     }
-    
+
     let aurionID = req.user.aurionID;
     let widgetName = req.body.widgetName;       // a verif dans MIDDLEWARE
     let dateNow = new Date();
-    let hour = new Date(  dateNow.setHours(dateNow.getHours() + 2)).getHours();
+    let hour = new Date(dateNow.setHours(dateNow.getHours() + 2)).getHours();
     console.log('setHabitsWidget --> hour =', hour)
 
     let doc = await db.Models.Widget.findOne({ aurionID: aurionID })
