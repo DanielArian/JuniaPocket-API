@@ -7,3 +7,5 @@ exports.UnavailableRoom = require('./unavailableRoomSchema');
 exports.Group = require('./group');
 exports.Widget = require('./widget');
 exports.FavoriteRoom = require('./favoriteRoom');
+exports.AuthNews = require('./authNews');
+exports.News = require('./news');
