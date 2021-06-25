@@ -24,7 +24,6 @@ Projet en cours de développement.
     4. [Quitter un groupe](#quitter-groupe)
     5. [Recherche créneaux commun emploi du temps](#creaneaux-communs)
 7. [Widget](#widget)
-8. [News Widget](#news)
 
 
 Interroger le serveur : https://juniapocketapi.herokuapp.com
@@ -246,7 +245,6 @@ Data :
 ```js
 {
   date: <jj/mm/aaaa>,
-  notification: <true_or_false>
 }
 ```
 
