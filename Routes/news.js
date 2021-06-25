@@ -26,7 +26,7 @@ router.post('/send', async function (req, res) {
     let aurionID = req.user.aurionID;
     let userDoc = await db.Models.User.findOne({aurionID: aurionID});
     let name = userDoc.name;
-    const doc = new News({
+    const doc = new db.Models.News({
         _id: new mongoose.Types.ObjectId(),
         auteur: name,
         titre: req.body.titre,
@@ -34,7 +34,7 @@ router.post('/send', async function (req, res) {
         date: new Date(),
         dest: req.body.dest
     },
-        { collection: 'News' });
+        { collection: 'news' });
     doc.save(function (err, doc) {
         if (err) return console.error(err);
     });
