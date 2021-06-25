@@ -460,3 +460,37 @@ Body :
 La valeur de `date` doit obligatoirement être au format `jj/mm/aaaa`.
 Pour utiliser la date du jour de la requête, laisse le champs vide (une chaine
 de caractères vide).
+
+La requête renvoie l'ensemble des créneaux disponibles dans la semaine incluant la date demandée. Elle suit la structure suivante (par exemple) :
+
+```js
+{
+  "Mon, 08 Mar 2021 00:00:00 GMT":[
+    ["10:05","10:20"],
+    ["12:25","13:30"],
+    ["15:35","15:50"],
+    ["17:55","21:00"]
+  ],
+  "Tue, 09 Mar 2021 00:00:00 GMT":[
+    ["10:05","13:30"],
+    ["15:35","15:50"],
+    ["17:55","21:00"]
+  ],
+  "Wed, 10 Mar 2021 00:00:00 GMT":[
+    ["10:05","10:20"],
+    ["12:25","13:30"],
+    ["15:35","15:50"],
+    ["17:55","21:00"]
+  ],
+  "Thu, 11 Mar 2021 00:00:00 GMT":[
+    ["08:00","21:00"]
+  ],
+  "Fri, 12 Mar 2021 00:00:00 GMT":[
+    ["10:05","10:20"],
+    ["12:25","21:00"]
+  ],
+  "Sat, 13 Mar 2021 00:00:00 GMT":[
+    ["08:00","21:00"]
+  ]
+}
+```
