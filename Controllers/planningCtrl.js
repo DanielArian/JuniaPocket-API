@@ -20,20 +20,20 @@ function firstTimeDone(req, aurionID) {
 
 async function getPlanningOfWeek (req, res) {
     
-    let aurionID = req.user.aurionID;   // assuré par le middleware auth.js
+    let aurionID = req.user.aurionID;   // assuré par le middleware auth.js ou à l'inscription pour première recup
     let date = req.body.date;       // assuré par le middleware requireWeekDate.js
-                                    // au format jj/mm/aaaa
+                                    // au format jj/mm/aaaa ou ''
 
     if (req.body.hasOwnProperty('aurionIDForAnotherUser')) { // requête pour un autre membre de groupe
         aurionID = req.body.aurionIDForAnotherUser;
         console.log('aurionIDForAnotherUser:', req.body.aurionIDForAnotherUser);
     }
-    
+
 
     // On récupère les éventuelles semaines sauvegardées dans la bdd par l'user
     let availableWeeks = await db.managePlanning.getWeeks(aurionID, db.Models.Planning);
-    
-    
+
+
     // Si des semaines sont déjà sauv dans la Database, on cherche si la date de la semaine
     // demandée est déjà comprise dans une de ces semaines.
 

@@ -6,7 +6,8 @@ const sCode = require('../httpStatus');
 
 const db = require('../Database/index');
 const aurionScrapper = require('../AurionScrapperCore/index');
-const { findOneAndUpdate } = require('../Database/Models/mark');
+const planningCtrl = require('./planningCtrl');
+const marksCtrl = require('./marksCtrl');
 
 
 exports.signup = async (req, res, next) => {
@@ -52,12 +53,23 @@ exports.signup = async (req, res, next) => {
 
         let initWidgetDoc = db.manageWidget.createWidgetDocument(aurionID);
         await db.save.saveDoc(initWidgetDoc);
-
-        return res.status(sCode.created).json({ message: `Utilisateur créé` })
+        // return res.status(sCode.created).json({ message: `Utilisateur créé` })
     } catch (error) {
         console.log(`signup error --> ${error}.`);
         return res.status(sCode.serverError).json({ error });
     }
+
+    // recup des notes et plannig pour la page d'accueil
+    try {
+        req.user = { aurionID: aurionID };
+        await planningCtrl.getPlanningOfWeek(req, res);
+        await marksCtrl.getMarks(req, res);
+    } catch (error) {
+        console.log(`signup error --> ${error}`);
+        return res.status(sCode.serverError).json({ error });
+    }
+
+    return res.status(sCode.created).json({ message: `Utilisateur créé` })
 }
 
 
@@ -112,6 +124,7 @@ exports.getList = async function (req, res) {
     console.log(listid);
     res.status(sCode.OK).send(listid);
 }
+
 
 exports.changeJpocketPassword = async function (req, res) {
 
@@ -180,9 +193,9 @@ exports.changeAurionLoginCred = async function (req, res) {
 exports.delete = async function (req, res) {
 
     let aurionID = req.user.aurionID;       // assuré par auth.js
-    
+
     if (!req.body.hasOwnProperty('jpocketPassword')) {
-        return res.status(sCode.badRequest).json({message: 'Paramètre jpocketPassword manquant.'});
+        return res.status(sCode.badRequest).json({ message: 'Paramètre jpocketPassword manquant.' });
     }
 
     // On vérifie que l'utilisateur est bien inscrit
@@ -211,7 +224,7 @@ exports.delete = async function (req, res) {
     await db.Models.Planning.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> Planning Doc de ${aurionID} deleted!`));
     await db.Models.Mark.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> Mark Doc de ${aurionID} deleted!`));
     await db.Models.NotifPreferences.deleteMany({ aurionID: aurionID }).then(console.log(`delete --> Notification Preference Doc de ${aurionID} deleted!`));
-    await db.Models.Group.updateMany({ "list": { $all: ["p64002"] } },
+    await db.Models.Group.updateMany({ "list": { $in: ["p64002"] } },
         {
             $pull: {
                 list: { $in: [aurionID] }
