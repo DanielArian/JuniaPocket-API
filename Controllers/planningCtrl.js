@@ -24,9 +24,9 @@ async function getPlanningOfWeek (req, res) {
     let date = req.body.date;       // assuré par le middleware requireWeekDate.js
                                     // au format jj/mm/aaaa
 
-    if (req.hasOwnProperty('aurionIDForAnotherUser')) {
-        aurionID = req.aurionIDForAnotherUser;
-        console.log('aurionIDForAnotherUser:', req.aurionIDForAnotherUser)
+    if (req.boyd.hasOwnProperty('aurionIDForAnotherUser')) { // requête pour un autre membre de groupe
+        aurionID = req.body.aurionIDForAnotherUser;
+        console.log('aurionIDForAnotherUser:', req.body.aurionIDForAnotherUser);
     }
     
 
@@ -175,14 +175,13 @@ async function getCommonAvailableTimeSlots (req, res) {
         let result = await db.managePlanning.findWeekPlanningFromDate(aurionID, date);
         console.log('result', result);
         if (result == null) {
-            req.aurionIDForAnotherUser = aurionID;
             console.log('HERE');
             const token = req.headers.authorization.split(' ')[1]; // Authorization: 'Bearer TOKEN'
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
             const dataToSend = {
-                aurionID: aurionID,
+                aurionIDForAnotherUser: aurionID,
                 date: date
             }
             await axios
