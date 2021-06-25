@@ -24,7 +24,7 @@ async function getPlanningOfWeek (req, res) {
     let date = req.body.date;       // assuré par le middleware requireWeekDate.js
                                     // au format jj/mm/aaaa
 
-    if (req.boyd.hasOwnProperty('aurionIDForAnotherUser')) { // requête pour un autre membre de groupe
+    if (req.body.hasOwnProperty('aurionIDForAnotherUser')) { // requête pour un autre membre de groupe
         aurionID = req.body.aurionIDForAnotherUser;
         console.log('aurionIDForAnotherUser:', req.body.aurionIDForAnotherUser);
     }
