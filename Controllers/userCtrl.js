@@ -189,9 +189,9 @@ exports.delete = async function (req, res) {
     // Si oui, on récupère son mpd hashé via son userDoc
     var userDoc;
     try {
-        let result = await db.search.findUserByAurionIDInCollection(req.body.aurionID, db.Models.User);
+        let result = await db.search.findUserByAurionIDInCollection(aurionID, db.Models.User);
         if (result == 'USER_DOES_NOT_EXIST_IN_COLLECTION') {
-            return res.status(sCode.unauthorized).json({ error: 'UTILISATEUR_NON_TROUVE' });
+            return res.status(sCode.unauthorized).json({ error: 'UTILISATEUR_NON_TROUVE 22' });
         }
         if (result == 'ERROR') {
             return res.status(sCode.serverError).json({ error });
