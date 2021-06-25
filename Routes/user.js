@@ -9,7 +9,7 @@ router.post('/login', mw.requireLoginParam, userCtrl.login);
 
 router.use(mw.auth);
 router.get('/list', userCtrl.getList);
-router.get('/delete', userCtrl.delete);
+router.post('/delete', userCtrl.delete);
 router.post('/change-jpocket-password', userCtrl.changeJpocketPassword);
 router.post('/change-aurion-login-credentials', mw.requireAurionLoginCred, userCtrl.changeAurionLoginCred);
 router.post('/preferences/notifications', mw.requireNotifPrefParam, userCtrl.setNotificationsPreferences);

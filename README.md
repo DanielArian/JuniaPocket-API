@@ -24,6 +24,8 @@ Projet en cours de développement.
     4. [Quitter un groupe](#quitter-groupe)
     5. [Recherche créneaux commun emploi du temps](#creaneaux-communs)
 7. [Widget](#widget)
+8. [News Widget](#news)
+
 
 Interroger le serveur : https://juniapocketapi.herokuapp.com
 
@@ -147,9 +149,17 @@ Bad Request, Server Error, etc...
 
 ## Supprimer son compte Junia Pocket <a name="supprimer-compte"></a>
 
-Requête `GET` à l'url :  `/user/delete`
+Requête `POST` à l'url :  `/user/delete`
 
 A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
+Body :
+
+```js
+{
+  jpocketPassword: <value>
+}
+```
 
 ## Notes <a name="notes"></a>
 

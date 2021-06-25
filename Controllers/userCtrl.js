@@ -115,20 +115,20 @@ exports.getList = async function (req, res) {
 
 exports.changeJpocketPassword = async function (req, res) {
 
-    if(!req.body.hasOwnProperty('jpocketPassword')) {
-        return res.status(sCode.badRequest).json({error: 'Bad Request : pas de nouveau mot de pase fourni.'})
+    if (!req.body.hasOwnProperty('jpocketPassword')) {
+        return res.status(sCode.badRequest).json({ error: 'Bad Request : pas de nouveau mot de pase fourni.' })
     }
 
     let updatedJpocketPass = req.body.jpocketPassword;
-    
+
     // hashage du mdp JuniaPocket
     // Puis update dans BDD
     let newJpocketHashedPass = '';
     try {
         newJpocketHashedPass = await bcrypt.hash(updatedJpocketPass, 10)
-        await db.Models.User.updateOne({aurionID: req.user.aurionID},
-            {$set: {jpocketPassword: newJpocketHashedPass}}).then('Password updated!');
-        return res.status(sCode.OK).json({message: 'Mot de passe Junia Pocket mis à jour !'});
+        await db.Models.User.updateOne({ aurionID: req.user.aurionID },
+            { $set: { jpocketPassword: newJpocketHashedPass } }).then('Password updated!');
+        return res.status(sCode.OK).json({ message: 'Mot de passe Junia Pocket mis à jour !' });
     } catch (error) {
         console.log(error);
         return res.status(sCode.serverError).json({ error });
@@ -136,7 +136,7 @@ exports.changeJpocketPassword = async function (req, res) {
 }
 
 
-exports.changeAurionLoginCred = async function (req, res)  {
+exports.changeAurionLoginCred = async function (req, res) {
 
     let oldAurionID = req.user.aurionID;            // assuré par auth.js
 
@@ -177,9 +177,36 @@ exports.changeAurionLoginCred = async function (req, res)  {
 }
 
 
-exports.delete = async function (req, res)  {
+exports.delete = async function (req, res) {
 
     let aurionID = req.user.aurionID;       // assuré par auth.js
+    
+    if (!req.body.hasOwnProperty('jpocketPassword')) {
+        return res.status(sCode.badRequest).json({message: 'Paramètre jpocketPassword manquant.'});
+    }
+
+    // On vérifie que l'utilisateur est bien inscrit
+    // Si oui, on récupère son mpd hashé via son userDoc
+    var userDoc;
+    try {
+        let result = await db.search.findUserByAurionIDInCollection(req.body.aurionID, db.Models.User);
+        if (result == 'USER_DOES_NOT_EXIST_IN_COLLECTION') {
+            return res.status(sCode.unauthorized).json({ error: 'UTILISATEUR_NON_TROUVE' });
+        }
+        if (result == 'ERROR') {
+            return res.status(sCode.serverError).json({ error });
+        }
+        userDoc = result;
+    } catch (error) {
+        console.log(`login error --> ${error}`);
+        return res.status(sCode.serverError).json({ error });
+    }
+
+    let result = await bcrypt.compare(req.body.jpocketPassword, userDoc.jpocketPassword);
+    if (!result) {
+        return res.status(sCode.unauthorized).json({ error: 'MOT_DE_PASSE_INCORRECT' });
+    }
+
     await db.Models.User.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> User Doc de ${aurionID} deleted!`));
     await db.Models.Planning.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> Planning Doc de ${aurionID} deleted!`));
     await db.Models.Mark.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> Mark Doc de ${aurionID} deleted!`));
@@ -187,7 +214,7 @@ exports.delete = async function (req, res)  {
     await db.Models.Group.updateMany({ "list": { $all: ["p64002"] } },
         {
             $pull: {
-                list: { $all: [aurionID] }
+                list: { $in: [aurionID] }
             }
         }).then(console.log(`delete --> ${aurionID} retiré de tous ses éventuels groupes!`));
     return res.status(sCode.OK).json({ message: `Utilisateur ${aurionID} désinscrit avec succès!` });
