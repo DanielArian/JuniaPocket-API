@@ -18,15 +18,20 @@ function firstTimeDone(req, aurionID) {
 }
 
 
-exports.getPlanningOfWeek = async (req, res) => {
+async function getPlanningOfWeek (req, res) {
     
     let aurionID = req.user.aurionID;   // assuré par le middleware auth.js
     let date = req.body.date;       // assuré par le middleware requireWeekDate.js
                                     // au format jj/mm/aaaa
 
+    if (req.hasOwnProperty('aurionIDForAnotherUser')) {
+        aurionID = req.aurionIDForAnotherUser;
+        console.log('aurionIDForAnotherUser:', req.aurionIDForAnotherUser)
+    }
+    
+
     // On récupère les éventuelles semaines sauvegardées dans la bdd par l'user
     let availableWeeks = await db.managePlanning.getWeeks(aurionID, db.Models.Planning);
-
     
     
     // Si des semaines sont déjà sauv dans la Database, on cherche si la date de la semaine
@@ -88,7 +93,7 @@ exports.getPlanningOfWeek = async (req, res) => {
 }
 
 
-exports.updateWeek = async (req, res) => {
+async function updateWeek (req, res) {
 
     let aurionID = req.user.aurionID;   // assuré par le middleware auth.js
     let date = req.body.date;           // assuré par le middleware requireWeekDate.js
@@ -158,7 +163,7 @@ exports.updateWeek = async (req, res) => {
 }
 
 
-exports.getCommonAvailableTimeSlots = async (req, res) => {
+async function getCommonAvailableTimeSlots (req, res) {
 
     let groupID = req.body.groupID;
     let date = req.body.date;
@@ -168,15 +173,29 @@ exports.getCommonAvailableTimeSlots = async (req, res) => {
 
     for (aurionID of listOfAurionID) {
         let result = await db.managePlanning.findWeekPlanningFromDate(aurionID, date);
+        console.log('result', result);
         if (result == null) {
-            let dataToSend = {
+            req.aurionIDForAnotherUser = aurionID;
+            console.log('HERE');
+            const token = req.headers.authorization.split(' ')[1]; // Authorization: 'Bearer TOKEN'
+            const config = {
+                headers: { Authorization: `Bearer ${token}` }
+            };
+            const dataToSend = {
                 aurionID: aurionID,
                 date: date
             }
-            axios.post(`https://juniapocketapi.herokuapp.com/planning/get-week`, dataToSend)
-                .then('getCommonAvailableTimeSlots --> request sent');
+            await axios
+                .post(`https://juniapocketapi.herokuapp.com/planning/get-week`, dataToSend, config)
         }
     }
     let obj = await db.managePlanning.getCommonAvailableTimeSlots(listOfAurionID, date);
     return res.status(sCode.OK).send(JSON.stringify(obj));
+}
+
+
+module.exports = {
+    getPlanningOfWeek,
+    updateWeek,
+    getCommonAvailableTimeSlots
 }
