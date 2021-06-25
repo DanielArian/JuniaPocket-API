@@ -224,7 +224,8 @@ exports.delete = async function (req, res) {
     await db.Models.Planning.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> Planning Doc de ${aurionID} deleted!`));
     await db.Models.Mark.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> Mark Doc de ${aurionID} deleted!`));
     await db.Models.NotifPreferences.deleteMany({ aurionID: aurionID }).then(console.log(`delete --> Notification Preference Doc de ${aurionID} deleted!`));
-    await db.Models.Group.updateMany({ "list": { $in: ["p64002"] } },
+    await db.Models.Widget.deleteMany({ aurionID: aurionID }).then(console.log(`delete --> Widget Doc de ${aurionID} deleted!`));
+    await db.Models.Group.updateMany({ "list": { $in: [aurionID] } },
         {
             $pull: {
                 list: { $in: [aurionID] }
