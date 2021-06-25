@@ -154,7 +154,7 @@ async function marks(username, password) {
 
 
 
-async function planning(username, password) {
+async function planning(username, password, date) {
     /**
      * 
      * date au format "jj/mm/aaaa"
