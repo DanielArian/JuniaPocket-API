@@ -18,20 +18,24 @@ exports.signup = async (req, res, next) => {
 
     // console.log(aurionID, aurionPassword, jpocketPassword);
 
-    // Verification des identifiants Aurion, et si valides, recuperation du nom de l'utilisateur
-    let realName = '';
+    // Verification des identifiants Aurion, et si valides, recuperation du nom, planning semaine et notes
+
+    let fetchResult;
     try {
-        let name = await aurionScrapper.fetch.checkAurionIDAndGetNameIfOk(aurionID, aurionPassword);
-        if (name == 'INVALID') {
+        let date = '';
+        fetchResult = await aurionScrapper.fetch.namePlanningMarks(aurionID, aurionPassword, date);
+        console.log(fetchResult)
+        if (fetchResult == 'Username ou mot de passe invalide.') {
             return res.status(sCode.unauthorized).json({ error: 'Login ou mot de passe Aurion invalide' });
         }
-        else {
-            realName = name;
-        }
-    } catch (error) {
+    } catch {
         console.log(error);
         return res.status(sCode.serverError).json({ error });
     }
+
+    let [name, planningPage, marksPage] = fetchResult;
+    let week = aurionScrapper.formatPlanning.responseWeekPlanning(planningPage);
+    let marks = aurionScrapper.formatMarks.getFormatedMarks(marksPage);
 
     // hashage du mdp JuniaPocket
     let newJpocketHashedPass = '';
@@ -43,33 +47,27 @@ exports.signup = async (req, res, next) => {
     }
 
     // Sauvegarde de l'utilisateur dans la Database
-    // Et sauvegarde d'un doc de notification de préférence vide
-    // Et sauvegarde d'un doc de widget avec les préférences et valeurs par défaut
-    // dans la collection 'notificationPreferences'
+    // Avec ses préférences et ses notes et planning semaine actuelle
     try {
-        let userDoc = db.manageUser.createUserDocument(aurionID, aurionPassword, newJpocketHashedPass, realName);
+        let userDoc = db.manageUser.createUserDocument(aurionID, aurionPassword, newJpocketHashedPass, name);
         await db.save.saveDoc(userDoc);
+
         db.manageNotifPreferences.saveEmptyNotifPreferencesDoc(aurionID);
+
+        let PlanningDoc = db.managePlanning.createPlanningDocument(aurionID, week);
+        db.save.saveDoc(PlanningDoc);
+
+        let MarkDoc = db.manageMark.createMarkDocument(aurionID, marks);
+        await db.save.saveDoc(MarkDoc);
 
         let initWidgetDoc = db.manageWidget.createWidgetDocument(aurionID);
         await db.save.saveDoc(initWidgetDoc);
-        // return res.status(sCode.created).json({ message: `Utilisateur créé` })
+
+        return res.status(sCode.created).json({ message: `Utilisateur créé` });
     } catch (error) {
         console.log(`signup error --> ${error}.`);
         return res.status(sCode.serverError).json({ error });
     }
-
-    // recup des notes et plannig pour la page d'accueil
-    try {
-        req.user = { aurionID: aurionID };
-        await planningCtrl.getPlanningOfWeek(req, res);
-        await marksCtrl.getMarks(req, res);
-    } catch (error) {
-        console.log(`signup error --> ${error}`);
-        return res.status(sCode.serverError).json({ error });
-    }
-
-    return res.status(sCode.created).json({ message: `Utilisateur créé` })
 }
 
 
@@ -220,9 +218,9 @@ exports.delete = async function (req, res) {
         return res.status(sCode.unauthorized).json({ error: 'MOT_DE_PASSE_INCORRECT' });
     }
 
-    await db.Models.User.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> User Doc de ${aurionID} deleted!`));
-    await db.Models.Planning.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> Planning Doc de ${aurionID} deleted!`));
-    await db.Models.Mark.deleteOne({ aurionID: aurionID }).then(console.log(`delete --> Mark Doc de ${aurionID} deleted!`));
+    await db.Models.User.deleteMany({ aurionID: aurionID }).then(console.log(`delete --> User Doc de ${aurionID} deleted!`));
+    await db.Models.Planning.deleteMany({ aurionID: aurionID }).then(console.log(`delete --> Planning Doc de ${aurionID} deleted!`));
+    await db.Models.Mark.deleteMany({ aurionID: aurionID }).then(console.log(`delete --> Mark Doc de ${aurionID} deleted!`));
     await db.Models.NotifPreferences.deleteMany({ aurionID: aurionID }).then(console.log(`delete --> Notification Preference Doc de ${aurionID} deleted!`));
     await db.Models.Widget.deleteMany({ aurionID: aurionID }).then(console.log(`delete --> Widget Doc de ${aurionID} deleted!`));
     await db.Models.Group.updateMany({ "list": { $in: [aurionID] } },
