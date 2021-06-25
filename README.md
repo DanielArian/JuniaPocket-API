@@ -461,6 +461,10 @@ La valeur de `date` doit obligatoirement être au format `jj/mm/aaaa`.
 Pour utiliser la date du jour de la requête, laisse le champs vide (une chaine
 de caractères vide).
 
+*Remarque*: si certains membres du groupes n'ont pas encore sauvegardé dans la
+Database le planning de la semaine incluant la date demandée, la requête
+est augmentée d'un délai d'environ 15 * (nb_de_mb_dans_ce_cas) secondes.
+
 La requête renvoie l'ensemble des créneaux disponibles dans la semaine incluant la date demandée. Elle suit la structure suivante (par exemple) :
 
 ```js
