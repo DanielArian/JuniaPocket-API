@@ -395,6 +395,10 @@ Body :
 ``̀ js
 {
     "aurionIDList": [],
-    "date": ""
+    "date": <jj/mm/yyyy>
 }
 ```
+
+La valeur de `date` doit obligatoirement être au format `jj/mm/aaaa`, le serveur
+renvoie le planning de toute la semaine incluant cette date après avoir mis à jour
+la Database.
