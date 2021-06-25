@@ -173,9 +173,7 @@ async function getCommonAvailableTimeSlots (req, res) {
 
     for (aurionID of listOfAurionID) {
         let result = await db.managePlanning.findWeekPlanningFromDate(aurionID, date);
-        console.log('result', result);
         if (result == null) {
-            console.log('HERE');
             const token = req.headers.authorization.split(' ')[1]; // Authorization: 'Bearer TOKEN'
             const config = {
                 headers: { Authorization: `Bearer ${token}` }

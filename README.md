@@ -17,7 +17,13 @@ Projet en cours de développement.
     2. [Vérifier s'il y a des modifications dans un planning](#fetch-planning)
 4. [Notifications](#notifications)
 5. [Salles disponibles](#salles-dispo)
-6. [Recherche créneaux commun emploi du temps](#creaneaux-communs)
+6. [Groupes](#groupes)
+    1. [Créer un groupe](#creer-groupe)
+    2. [Ajouter membre à un groupe](#ajouter-membre)
+    3. [Connaitre les groupes auxquels on appartient](#mes-groupes)
+    4. [Quitter un groupe](#quitter-groupe)
+    5. [Recherche créneaux commun emploi du temps](#creaneaux-communs)
+7. [Widget](#widget)
 
 Interroger le serveur : https://juniapocketapi.herokuapp.com
 
@@ -382,9 +388,61 @@ Sinon, c'est une liste contenant des objets à la structure suivante :
 Si la valeur de `timeLimit` est `null`, cela signifie que la salle est disponible jusque 21h.
 Sinon, c'est que la salle est réservée prochainement dans la journée et la valeur de `timeLimit` donne l'heure de la prochaine occupation au format `HH:MM`.
 
-## Recherche créneaux commun dans l'emploi du temps
+## Groupes <a name="groupes"></a>
 
-### Requête à effectuer
+## Créer un groupe <a name="creer-groupe"></a>
+
+`POST /group/create`
+
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
+Body : 
+
+```js
+{
+  groupName: <value>
+  list: <list_of_AurionID>
+}
+```
+
+## Ajouter membre à un groupe <a name="ajouter-membre"></a>
+
+`POST /group/join`
+
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
+Body : 
+
+```js
+{
+  aurionIDToAdd: <value>
+  groupID: <value>
+}
+```
+
+## Connaitre les groupes auxquels on appartient <a name="mes-groupes"></a>
+
+`GET /group/get`
+
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
+Body : aucun
+
+## Quitter un groupe <a name="quitter-groupe"></a>
+
+`POST /group/leave`
+
+A ajouter dans le Header : `Authorization: Bearer <token_obtenu_au_login>`
+
+Body :
+
+``` js
+{
+    "groupID": <value>,
+}
+```
+
+## Recherche créneaux commun emploi du temps <a name="creaneaux-communs"></a>
 
 `POST /planning/get-common-availability`
 
@@ -394,11 +452,11 @@ Body :
 
 ``` js
 {
-    "aurionIDList": [],
+    "groupID": value,
     "date": <jj/mm/yyyy>
 }
 ```
 
-La valeur de `date` doit obligatoirement être au format `jj/mm/aaaa`, le serveur
-renvoie le planning de toute la semaine incluant cette date après avoir mis à jour
-la Database.
+La valeur de `date` doit obligatoirement être au format `jj/mm/aaaa`.
+Pour utiliser la date du jour de la requête, laisse le champs vide (une chaine
+de caractères vide).
