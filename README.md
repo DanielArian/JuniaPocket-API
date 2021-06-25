@@ -392,7 +392,7 @@ Header : Bearer token
 
 Body :
 
-``̀ js
+``` js
 {
     "aurionIDList": [],
     "date": <jj/mm/yyyy>
