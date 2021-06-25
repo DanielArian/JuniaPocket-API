@@ -390,8 +390,9 @@ Sinon, c'est que la salle est réservée prochainement dans la journée et la va
 
 Header : Bearer token
 
-Body : 
-`̀ ̀`js
+Body :
+
+``̀ js
 {
     "aurionIDList": [],
     "date": ""
