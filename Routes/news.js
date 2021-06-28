@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-const mw = require('../Middlewares/index');
 const db = require('../Database/index');
 const mongoose = require('mongoose');
 
@@ -40,5 +39,13 @@ router.post('/send', async function (req, res) {
     });
     res.status(200).send("Ajout Ã  la bdd ok");
 });
+
+
+app.post('/delete',async function (req, res) {
+    res.set('Content-Type', 'application/json');
+    const news = await db.Models.News.remove({ _id: mongoose.Types.ObjectId(req.body.id)}).exec();
+    res.status(200).send("removed");
+  })
+
 
 module.exports = router;
