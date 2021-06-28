@@ -41,7 +41,7 @@ router.post('/send', async function (req, res) {
 });
 
 
-app.post('/delete',async function (req, res) {
+router.post('/delete',async function (req, res) {
     res.set('Content-Type', 'application/json');
     const news = await db.Models.News.remove({ _id: mongoose.Types.ObjectId(req.body.id)}).exec();
     res.status(200).send("removed");
