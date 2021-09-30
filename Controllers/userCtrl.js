@@ -52,7 +52,7 @@ exports.signup = async (req, res ) => {
     // Sauvegarde de l'utilisateur dans la Database
     // Avec ses préférences et ses notes et planning semaine actuelle
     try {
-        let userDoc = db.manageUser.createUserDocument(aurionID, encodedAurionPwd, newJpocketHashedPass, name);
+        let userDoc = db.manageUser.createUserDocument(aurionID, encodedAurionPassword, newJpocketHashedPass, name);
         await db.save.saveDoc(userDoc);
 
         db.manageNotifPreferences.saveEmptyNotifPreferencesDoc(aurionID);
