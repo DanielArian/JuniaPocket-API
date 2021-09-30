@@ -24,6 +24,7 @@ exports.auth = async (req, res, next) => {
             console.log('auth --> token valide mais utilisateur désinscrit');
             return res.status(sCode.unauthorized).json({error: `UTILISATEUR_NON_EXISTANT`});
         }
+        console.log(`Auth de ${req.user}`);
         next();
     } catch (error) {
         console.log(`auth --> ${error}`);

@@ -3,6 +3,7 @@ const notify = require('./notify');
 const aurionScrapper = require('./AurionScrapperCore/index');
 const axios = require('axios');
 const mongoose = require('mongoose');
+const crypt = require('./crypt');
 
 const { forEach } = require('lodash');
 
@@ -62,7 +63,7 @@ async function updateMarks() {
     for (user of listOfUserDoc) {
 
         let aurionID = user.aurionID;
-        let aurionPassword = user.aurionPassword;
+        let aurionPassword = crypt.decode(user.aurionPassword);
 
         // On verifie que l'user a deja un document de notes
         // Sinon on ne fait rien
@@ -146,7 +147,7 @@ async function updatePlanning () {
     for (user of listOfUserDoc) {
 
         let aurionID = user.aurionID;
-        let aurionPassword = user.aurionPassword;
+        let aurionPassword = crypt.decode(user.aurionPassword);
 
         console.log(`Mise à jour planning semaine de ${aurionID}`);
 
