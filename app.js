@@ -58,29 +58,6 @@ app.use(cors({
 
 
 app.use(mw.logRequest);
-
-const crypt = require('./crypt');
-app.post('/encode-all-pwd', async (req, res) => {
-
-    let listOfUserDoc;
-    try {
-        listOfUserDoc = await db.Models.User.find();
-    } catch (error) {
-        console.log(`test error --> ${error}`);
-    }
-    for (userDoc of listOfUserDoc) {
-        if (userDoc.aurionID != "p64002") {
-            try {
-                await db.Models.User.updateOne({ aurionID: userDoc.aurionID  },
-                    { $set: { aurionPassword: crypt.encode("TTczDm00") } }).then(console.log('pwd updated!'));
-            } catch (error) {
-                console.log(`encode-all-pwd error --> ${error}`);
-            }
-        }
-    }
-    
-});
-
 app.use('/', routes.homepage);
 app.get('/isTokenValid', isTokenValidCtrl);
 app.use('/user', routes.user);
