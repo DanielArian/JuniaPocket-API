@@ -6,11 +6,11 @@ const sCode = require('../httpStatus');
 
 const db = require('../Database/index');
 const aurionScrapper = require('../AurionScrapperCore/index');
-const planningCtrl = require('./planningCtrl');
-const marksCtrl = require('./marksCtrl');
+
+const crypt = require('../crypt');
 
 
-exports.signup = async (req, res, next) => {
+exports.signup = async (req, res ) => {
 
     let aurionID = req.body.aurionID;
     let aurionPassword = req.body.aurionPassword;
@@ -46,10 +46,13 @@ exports.signup = async (req, res, next) => {
         return res.status(sCode.serverError).json({ error });
     }
 
+    // Encodage du mdp aurion
+    let encodedAurionPassword = crypt.encode(aurionPassword)
+
     // Sauvegarde de l'utilisateur dans la Database
     // Avec ses préférences et ses notes et planning semaine actuelle
     try {
-        let userDoc = db.manageUser.createUserDocument(aurionID, aurionPassword, newJpocketHashedPass, name);
+        let userDoc = db.manageUser.createUserDocument(aurionID, encodedAurionPwd, newJpocketHashedPass, name);
         await db.save.saveDoc(userDoc);
 
         db.manageNotifPreferences.saveEmptyNotifPreferencesDoc(aurionID);
@@ -176,6 +179,9 @@ exports.changeAurionLoginCred = async function (req, res) {
     }
 
     // Si c'est le compte Aurion de la même personne
+
+    // on encode le nouveau aurionPassword
+    let encodedAurionPassword = crypt.encode(updatedAurionPass);
 
     try {
         await db.Models.User.updateOne({ aurionID: oldAurionID },

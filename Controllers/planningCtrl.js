@@ -6,6 +6,7 @@ const db = require('../Database/index');
 const aurionScrapper = require('../AurionScrapperCore/index');
 const { getAurionPassword } = require('../Database/manageUser');
 const notify = require('../notify');
+const crypt = require('../crypt');
 
 
 function firstTimeDone(req, aurionID) {
@@ -61,7 +62,8 @@ async function getPlanningOfWeek (req, res) {
     console.log(`Récupération du planning de ${aurionID} dans la semaine du ${date}`);
     let requestedWeek;
     try {
-        let aurionPassword = await getAurionPassword(aurionID);
+        let encodedAurionPassword = await getAurionPassword(aurionID);
+        let aurionPassword = crypt.decode(encodedAurionPassword);
         let planningPage = await aurionScrapper.fetch.planning(aurionID, aurionPassword, date);
         if (planningPage == 'Username ou mot de passe invalide.') {
             firstTimeDone(req, aurionID);
@@ -117,7 +119,8 @@ async function updateWeek (req, res) {
     console.log(`Récupération du planning de ${aurionID} dans la semaine du ${date}`);
     let requestedWeek;
     try {
-        let aurionPassword = await getAurionPassword(aurionID);
+        let encodedAurionPassword = await getAurionPassword(aurionID);
+        let aurionPassword = crypt.decode(encodedAurionPassword);
         let planningPage = await aurionScrapper.fetch.planning(aurionID, aurionPassword, date);
         if (planningPage == 'Username ou mot de passe invalide.') {
             return res.status(sCode.unauthorized).json({error: 'IDENTIFIANTS_AURION_MODIFIES'});

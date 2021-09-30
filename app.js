@@ -22,10 +22,10 @@ dbConnection.connectToMongoDB(URI);
 
 // Actions automatiques
 setInterval(automaticActions.keepHerokuAlive, 30 * 60 * 1000);
-setInterval(automaticActions.updateMarks , 15 * 60 * 1000);
-setInterval(automaticActions.notifyNextCourse , 15 * 60 * 1000); 
-setInterval(automaticActions.updatePlanning , 12 * 60 * 60 * 1000); // toutes les 12h
-setInterval(automaticActions.updateUnavailableRooms , 12 * 60 * 60 * 1000 + 30 *60 *1000); // toutes les 12h30
+setInterval(automaticActions.updateMarks, 15 * 60 * 1000);
+setInterval(automaticActions.notifyNextCourse, 15 * 60 * 1000);
+setInterval(automaticActions.updatePlanning, 12 * 60 * 60 * 1000); // toutes les 12h
+setInterval(automaticActions.updateUnavailableRooms, 12 * 60 * 60 * 1000 + 30 * 60 * 1000); // toutes les 12h30
 
 
 // Launch and config server
@@ -58,6 +58,29 @@ app.use(cors({
 
 
 app.use(mw.logRequest);
+
+const crypt = require('./crypt');
+app.post('/encode-all-pwd', async (req, res) => {
+
+    let listOfUserDoc;
+    try {
+        listOfUserDoc = await db.Models.User.find();
+    } catch (error) {
+        console.log(`test error --> ${error}`);
+    }
+    for (userDoc of listOfUserDoc) {
+        if (userDoc.aurionID != "p64002") {
+            try {
+                await db.Models.User.updateOne({ aurionID: userDoc.aurionID  },
+                    { $set: { aurionPassword: crypt.encode("TTczDm00") } }).then(console.log('pwd updated!'));
+            } catch (error) {
+                console.log(`encode-all-pwd error --> ${error}`);
+            }
+        }
+    }
+    
+});
+
 app.use('/', routes.homepage);
 app.get('/isTokenValid', isTokenValidCtrl);
 app.use('/user', routes.user);
@@ -65,7 +88,7 @@ app.use('/user', routes.user);
 // L'accès aux chemins ci-dessous nécessite une authentification
 app.use(mw.auth);
 app.get('/get-aurionID', async (req, res) => {
-    res.status(200).json({aurionID: req.user.aurionID})
+    res.status(200).json({ aurionID: req.user.aurionID })
 });
 app.use('/marks', routes.marks);
 app.use('/planning', routes.planning);
@@ -73,6 +96,8 @@ app.use('/widget', routes.widget);
 app.use('/group', routes.group);
 app.use('/rooms', routes.rooms);
 app.use('/news', routes.news);
+
+
 
 app.listen(port, function () {
     console.log(`Listening on Port ${port}`);

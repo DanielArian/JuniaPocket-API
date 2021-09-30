@@ -5,7 +5,7 @@
 
 const jwt = require('jsonwebtoken');
 const config = require('../Config/index');
-const  db = require('../Database/index');
+const db = require('../Database/index');
 const sCode = require('../httpStatus');
 
 exports.auth = async (req, res, next) => {

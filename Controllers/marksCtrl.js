@@ -1,7 +1,7 @@
 const sCode = require('../httpStatus');
 const db = require('../Database/index');
 const aurionScrapper = require('../AurionScrapperCore/index');
-const notify = require('../notify');
+const crypt = require('../crypt');
 
 
 function renameProperty(obj, oldKey, newKey) {
@@ -77,7 +77,8 @@ exports.getMarks = async (req, res) => {
         // On récupère notes sur Aurion
         let marksOfUser;
         try {
-            let aurionPassword = await db.manageUser.getAurionPassword(aurionID);
+            let encodedAurionPassword = await db.manageUser.getAurionPassword(aurionID);
+            let aurionPassword = crypt.decode(encodedAurionPassword);
             if (aurionPassword == '') {
                 console.log(`getMarks --> Erreur dans la lecture du mdp aurion dans la collection User`)
                 firstTimeDone(req, aurionID)
@@ -146,7 +147,8 @@ exports.updateMarks = async (req, res) => {
     // On récupère notes sur Aurion
     let updatedMarksOfUser;
     try {
-        let aurionPassword = await db.manageUser.getAurionPassword(aurionID);
+        let encodedAurionPassword = await db.manageUser.getAurionPassword(aurionID);
+        let aurionPassword = crypt.decode(encodedAurionPassword);
         if (aurionPassword == '') {
             console.log(`getMarks --> Erreur dans la lecture du mdp aurion dans la collection User`)
             return res.status(sCode.serverError).json({ error });
