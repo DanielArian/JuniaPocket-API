@@ -47,7 +47,7 @@ exports.signup = async (req, res ) => {
     }
 
     // Encodage du mdp aurion
-    let encodedAurionPassword = crypt.encode(aurionPassword)
+    let encodedAurionPassword = crypt.encode(aurionPassword);
 
     // Sauvegarde de l'utilisateur dans la Database
     // Avec ses préférences et ses notes et planning semaine actuelle
