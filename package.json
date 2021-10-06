@@ -14,10 +14,10 @@
   "author": "Daniel ARIAN, ISEN Lille",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
-    "cheerio": "^1.0.0-rc.9",
+    "cheerio": "^1.0.0-rc.10",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^10.0.0",
@@ -25,12 +25,12 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
-    "mongodb": "^3.6.9",
-    "mongoose": "^5.12.12",
+    "mongodb": "^3.7.2",
+    "mongoose": "^5.13.10",
     "pending-xhr-puppeteer": "^2.3.3",
     "puppeteer": "^9.1.1",
     "rss-parser": "^3.12.0",
-    "xlsx": "^0.17.0"
+    "xlsx": "^0.17.2"
   },
   "engines": {
     "node": "14.16"

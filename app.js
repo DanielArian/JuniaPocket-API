@@ -10,13 +10,14 @@ const db = require('./Database/index');
 
 const isTokenValidCtrl = require('./Controllers/isTokenValid');
 
+const dbCluster = process.env.DB_CLUSTER || config.dbCluster;
 const dbUsername = process.env.DB_USERNAME || config.dbUsername;
 const dbPassword = process.env.DB_PASSWORD || config.dbPassword;
 const port = process.env.PORT || 5000;
 
 // Connection à Mongo DataBase
 const dbConnection = require('./databaseConnection');
-const URI = `mongodb+srv://${dbUsername}:${dbPassword}@juniapocket.1vwtr.mongodb.net/data?retryWrites=true&w=majority`
+const URI = `mongodb+srv://${dbUsername}:${dbPassword}@${dbCluster}/data?retryWrites=true&w=majority`
 dbConnection.connectToMongoDB(URI);
 
 
@@ -37,12 +38,13 @@ app.use(express.urlencoded({ extended: true }));
 app.locals.listOfUsersCurrentlyGettingPlanningForFirstTime = [];
 app.locals.listOfUsersCurrentlyGettingMarkForFirstTime = [];
 
-// Set CORS
 var allowedDomains = [
     'https://juniapocket.vercel.app',
+    'https://junia-pocket-dev.vercel.app',
     'https://juchnia-pierre2.vercel.app',
     'http://localhost:3000'
 ];
+
 app.use(cors({
     origin: function (origin, callback) {
         // bypass the requests with no origin (like curl requests, mobile apps, etc )
