@@ -1,5 +1,5 @@
 # Junia Pocket API
-Projet en cours de développement.
+Projet non maintenu.
 
 ## Documentation
 
